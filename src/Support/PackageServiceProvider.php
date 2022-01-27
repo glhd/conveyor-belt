@@ -1,6 +1,6 @@
 <?php
 
-namespace Galahad\LaravelPackageTemplate\Support;
+namespace Galahad\Conveyor\Support;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -27,19 +27,19 @@ class PackageServiceProvider extends ServiceProvider
 	
 	public function register()
 	{
-		$this->mergeConfigFrom("{$this->base_dir}/config.php", 'laravel-package-template');
+		$this->mergeConfigFrom("{$this->base_dir}/config.php", 'conveyor');
 	}
 	
 	protected function bootViews() : self
 	{
 		$views_directory = "{$this->base_dir}/resources/views";
 		
-		$this->loadViewsFrom($views_directory, 'laravel-package-template');
+		$this->loadViewsFrom($views_directory, 'conveyor');
 		
 		if (method_exists($this->app, 'resourcePath')) {
 			$this->publishes([
-				$views_directory => $this->app->resourcePath('views/vendor/laravel-package-template'),
-			], 'laravel-package-template-views');
+				$views_directory => $this->app->resourcePath('views/vendor/conveyor'),
+			], 'conveyor-views');
 		}
 		
 		return $this;
@@ -48,7 +48,7 @@ class PackageServiceProvider extends ServiceProvider
 	protected function bootBladeComponents() : self
 	{
 		if (version_compare($this->app->version(), '8.0.0', '>=')) {
-			Blade::componentNamespace('Glhd\\LaravelPackageTemplate\\Components', 'laravel-package-template');
+			Blade::componentNamespace('Glhd\\Conveyor\\Components', 'conveyor');
 		}
 		
 		return $this;
@@ -58,8 +58,8 @@ class PackageServiceProvider extends ServiceProvider
 	{
 		if (method_exists($this->app, 'configPath')) {
 			$this->publishes([
-				"{$this->base_dir}/config.php" => $this->app->configPath('laravel-package-template.php'),
-			], 'laravel-package-template-config');
+				"{$this->base_dir}/config.php" => $this->app->configPath('conveyor.php'),
+			], 'conveyor-config');
 		}
 		
 		return $this;
