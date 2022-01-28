@@ -31,11 +31,15 @@
     </a>
 </div>
 
-# conveyor
+# Conveyor
 
-Please replace `glhd/conveyor` with the package name in this file, 
-the change log, and the `composer.json` file before continuing.
+Conveyor provides all the underlying mechanics necessary to write artisan commands that process lots of data efficiently.
 
 ## Installation
 
+```shell
+# composer require glhd/conveyor
+```
+
 ## Usage
+

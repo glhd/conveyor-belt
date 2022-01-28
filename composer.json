@@ -12,9 +12,13 @@
   ],
   "license": "MIT",
   "require": {
-    "illuminate/support": "^8.0|^9.0",
+    "illuminate/support": "^8.81",
     "ext-json": "*",
-    "mockery/mockery": "^1.3"
+    "mockery/mockery": "^1.3",
+    "symfony/console": "^5.4",
+    "illuminate/console": "^8.81",
+    "jdorn/sql-formatter": "^1.2",
+    "illuminate/collections": "^8.81"
   },
   "require-dev": {
     "orchestra/testbench": "^6.21|^7.0",
