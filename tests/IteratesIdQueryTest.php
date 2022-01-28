@@ -4,7 +4,6 @@ namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\ShowUsersCommand;
 use SqlFormatter;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class IteratesIdQueryTest extends TestCase
 {

@@ -2,8 +2,8 @@
 
 namespace Glhd\ConveyorBelt\Tests\Commands;
 
-use Glhd\ConveyorBelt\Tests\Models\User;
 use Glhd\ConveyorBelt\IteratesIdQuery;
+use Glhd\ConveyorBelt\Tests\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 

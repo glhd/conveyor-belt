@@ -47,11 +47,8 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Glhd\\ConveyorBelt\\Support\\PackageServiceProvider"
-      ],
-      "aliases": {
-        "Gretel": "Glhd\\ConveyorBelt\\Support\\Facades\\Package"
-      }
+        "Glhd\\ConveyorBelt\\Support\\ConveyorBeltServiceProvider"
+      ]
     }
   },
   "minimum-stability": "dev",

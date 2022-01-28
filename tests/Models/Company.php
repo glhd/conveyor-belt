@@ -14,7 +14,7 @@ class Company extends Model
 	
 	protected static function newFactory()
 	{
-		return new class extends Factory {
+		return new class() extends Factory {
 			public function modelName()
 			{
 				return Company::class;
