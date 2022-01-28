@@ -7,7 +7,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [0.0.1] - 2022-01-28
 
-## [0.0.1]
+## Added
+
+- Initial release
 
 # Keep a Changelog Syntax
 
@@ -21,5 +23,3 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 [Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.0.1...HEAD
 
 [0.0.1]: https://github.com/glhd/conveyor-belt/compare/0.0.1...0.0.1
-
-[0.0.1]: https://github.com/glhd/conveyor-belt/compare/0.0.0...0.0.1
