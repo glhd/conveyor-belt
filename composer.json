@@ -1,5 +1,5 @@
 {
-  "name": "glhd/conveyor",
+  "name": "glhd/conveyor-belt",
   "description": "",
   "keywords": [
     "laravel"
@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Glhd\\Conveyor\\": "src/"
+      "Glhd\\ConveyorBelt\\": "src/"
     }
   },
   "autoload-dev": {
@@ -36,7 +36,7 @@
       "tests/TestCase.php"
     ],
     "psr-4": {
-      "Glhd\\Conveyor\\Tests\\": "tests/"
+      "Glhd\\ConveyorBelt\\Tests\\": "tests/"
     }
   },
   "scripts": {
@@ -46,10 +46,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Glhd\\Conveyor\\Support\\PackageServiceProvider"
+        "Glhd\\ConveyorBelt\\Support\\PackageServiceProvider"
       ],
       "aliases": {
-        "Gretel": "Glhd\\Conveyor\\Support\\Facades\\Package"
+        "Gretel": "Glhd\\ConveyorBelt\\Support\\Facades\\Package"
       }
     }
   },

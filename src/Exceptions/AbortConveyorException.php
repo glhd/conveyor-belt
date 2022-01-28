@@ -1,12 +1,12 @@
 <?php
 
-namespace Glhd\Conveyor\Exceptions;
+namespace Glhd\ConveyorBelt\Exceptions;
 
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Throwable;
 
-class AbortConveyorException extends RuntimeException
+class AbortConveyorBeltException extends RuntimeException
 {
 	public function __construct(string $message = '', int $code = Command::FAILURE, Throwable $previous = null)
 	{

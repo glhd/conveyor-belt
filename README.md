@@ -1,25 +1,25 @@
 <div style="float: right;">
-	<a href="https://github.com/glhd/conveyor/actions" target="_blank">
+	<a href="https://github.com/glhd/conveyor-belt/actions" target="_blank">
 		<img 
-			src="https://github.com/glhd/conveyor/workflows/PHPUnit/badge.svg" 
+			src="https://github.com/glhd/conveyor-belt/workflows/PHPUnit/badge.svg" 
 			alt="Build Status" 
 		/>
 	</a>
-	<a href="https://codeclimate.com/github/glhd/conveyor/test_coverage" target="_blank">
+	<a href="https://codeclimate.com/github/glhd/conveyor-belt/test_coverage" target="_blank">
 		<img 
 			src="https://api.codeclimate.com/v1/badges/f597a6e8d9f968a55f03/test_coverage" 
 			alt="Coverage Status" 
 		/>
 	</a>
-	<a href="https://packagist.org/packages/glhd/conveyor" target="_blank">
+	<a href="https://packagist.org/packages/glhd/conveyor-belt" target="_blank">
         <img 
-            src="https://poser.pugx.org/glhd/conveyor/v/stable" 
+            src="https://poser.pugx.org/glhd/conveyor-belt/v/stable" 
             alt="Latest Stable Release" 
         />
 	</a>
 	<a href="./LICENSE" target="_blank">
         <img 
-            src="https://poser.pugx.org/glhd/conveyor/license" 
+            src="https://poser.pugx.org/glhd/conveyor-belt/license" 
             alt="MIT Licensed" 
         />
     </a>
@@ -31,14 +31,14 @@
     </a>
 </div>
 
-# Conveyor
+# ConveyorBelt
 
-Conveyor provides all the underlying mechanics necessary to write artisan commands that process lots of data efficiently.
+ConveyorBelt provides all the underlying mechanics necessary to write artisan commands that process lots of data efficiently.
 
 ## Installation
 
 ```shell
-# composer require glhd/conveyor
+# composer require glhd/conveyor-belt
 ```
 
 ## Usage

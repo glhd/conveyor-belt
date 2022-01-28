@@ -1,8 +1,8 @@
 <?php
 
-namespace Galahad\Conveyor\Tests;
+namespace Galahad\ConveyorBelt\Tests;
 
-use Galahad\Conveyor\Support\PackageServiceProvider;
+use Galahad\ConveyorBelt\Support\PackageServiceProvider;
 use Illuminate\Container\Container;
 use Orchestra\Testbench\TestCase as Orchestra;
 
