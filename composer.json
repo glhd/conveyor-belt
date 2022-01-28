@@ -12,18 +12,17 @@
   ],
   "license": "MIT",
   "require": {
-    "illuminate/support": "^8.81",
-    "ext-json": "*",
-    "mockery/mockery": "^1.3",
+    "illuminate/support": "^8.81|^9.0|dev-master",
+    "illuminate/collections": "^8.81|^9.0|dev-master",
+    "illuminate/console": "^8.81|^9.0|dev-master",
     "symfony/console": "^5.4",
-    "illuminate/console": "^8.81",
-    "jdorn/sql-formatter": "^1.2",
-    "illuminate/collections": "^8.81"
+    "ext-json": "*",
+    "jdorn/sql-formatter": "^1.2"
   },
   "require-dev": {
-    "orchestra/testbench": "^6.21|^7.0",
+    "orchestra/testbench": "^6.21|^7.0|dev-master",
     "friendsofphp/php-cs-fixer": "^3.0",
-    "mockery/mockery": "^1.3.2",
+    "mockery/mockery": "^1.3",
     "phpunit/phpunit": "^9.5",
     "glhd/laravel-dumper": "^1.0"
   },
