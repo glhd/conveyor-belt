@@ -4,6 +4,7 @@ namespace Glhd\ConveyorBelt;
 
 use Closure;
 use Glhd\ConveyorBelt\Concerns\InteractsWithOutputDuringProgress;
+use Glhd\ConveyorBelt\Concerns\RespectsVerbosity;
 use Glhd\ConveyorBelt\Concerns\SetsUpConveyorBelt;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
@@ -11,6 +12,7 @@ use Illuminate\Support\Str;
 trait IteratesQuery
 {
 	use InteractsWithOutputDuringProgress;
+	use RespectsVerbosity;
 	use SetsUpConveyorBelt;
 	
 	public function handle()

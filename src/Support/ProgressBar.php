@@ -39,7 +39,7 @@ class ProgressBar
 		}
 		
 		$this->bar = $this->output->createProgressBar();
-		$this->bar->setFormat('%bar% %current%/%max% (%memory%, ~%remaining%) %message%');
+		$this->bar->setFormat($this->getFormat());
 		$this->bar->setMessage('');
 		$this->bar->start($count);
 		
@@ -73,12 +73,27 @@ class ProgressBar
 	public function message(string $message): self
 	{
 		if ($this->output->isVerbose()) {
+			$this->newLine();
 			$this->info($message);
+			
 			return $this;
 		}
 		
 		$message = trim($message);
 		$this->bar->setMessage($message);
+		
+		return $this;
+	}
+	
+	public function subMessage(string $message): self
+	{
+		if ($this->output->isVerbose()) {
+			$this->line(" - {$message}");
+			return $this;
+		}
+		
+		$message = trim($message);
+		$this->bar->setMessage(Str::before($this->bar->getMessage(), '→')." → {$message}");
 		
 		return $this;
 	}
@@ -110,5 +125,14 @@ class ProgressBar
 		$this->resume();
 		
 		return $result;
+	}
+	
+	protected function getFormat(): string
+	{
+		if ($this->input->getOption('show-memory-usage')) {
+			return '%bar% %current%/%max% (%memory%, ~%remaining%) %message%';
+		}
+		
+		return '%bar% %current%/%max% (~%remaining%) %message%';
 	}
 }

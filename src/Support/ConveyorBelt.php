@@ -22,7 +22,9 @@ use Throwable;
 
 class ConveyorBelt
 {
-	use InteractsWithIO;
+	use InteractsWithIO {
+		table as defaultTable;
+	}
 	
 	public ProgressBar $progress;
 	
@@ -51,6 +53,8 @@ class ConveyorBelt
 	
 	public function run(): int
 	{
+		$this->newLine();
+		
 		try {
 			$this->prepare();
 			$this->printIntro();
@@ -64,6 +68,8 @@ class ConveyorBelt
 			}
 			
 			return $exception->getCode();
+		} finally {
+			$this->newLine();
 		}
 	}
 	
@@ -161,12 +167,7 @@ class ConveyorBelt
 			throw $exception;
 		}
 		
-		$this->exceptions[] = new CollectedException(
-			$exception,
-			$this->getOutput()->isVerbose(),
-			$this->command->rowName(),
-			$item
-		);
+		$this->exceptions[] = new CollectedException($exception, $item);
 	}
 	
 	protected function logSql(): void
@@ -175,12 +176,12 @@ class ConveyorBelt
 			return;
 		}
 		
-		$this->getOutput()->section('SQL Queries Executed');
-		
-		collect(DB::getQueryLog())
-			->each(fn($log) => $this->printFormattedQuery($log['query'], $log['bindings']));
+		$table = collect(DB::getQueryLog())
+			->map(fn($log) => [$this->getFormattedQuery($log['query'], $log['bindings']), $log['time']]);
 		
 		$this->newLine();
+		$this->line(Str::plural('Query', $table->count()).' Executed');
+		$this->table(['Query', 'Time'], $table);
 		
 		DB::flushQueryLog();
 	}
@@ -204,14 +205,19 @@ class ConveyorBelt
 			$this->abort('The --diff flag requires Eloquent models');
 		}
 		
-		$table = array_map(
-			fn($value, $key) => [$key, $original[$key] ?? null, $value], 
-			$item->getChanges()
-		);
+		if (empty($changes = $item->getChanges())) {
+			return;
+		}
 		
-		$this->getOutput()->section('Changes to '.Str::title($this->command->rowName()));
-		$this->table(['', 'Original', 'Updated'], $table);
+		$table = collect($changes)->map(fn($value, $key) => ["<info>{$key}</info>", $original[$key] ?? null, $value]);
+		
+		$this->progress->pause();
+		
 		$this->newLine();
+		$this->line('Changes to '.Str::title($this->command->rowName()));
+		$this->table(['', 'Before', 'After'], $table);
+		
+		$this->progress->resume();
 	}
 	
 	protected function pauseIfStepping(): void
@@ -257,14 +263,20 @@ class ConveyorBelt
 	
 	protected function printFormattedQuery(string $sql, array $bindings): void
 	{
+		$this->newLine();
+		
+		$this->line($this->getFormattedQuery($sql, $bindings));
+	}
+	
+	protected function getFormattedQuery(string $sql, array $bindings): string
+	{
 		$bindings = Arr::flatten($bindings);
 		
 		$sql = preg_replace_callback('/\?/', static function() use (&$bindings) {
 			return DB::getPdo()->quote(array_shift($bindings));
 		}, $sql);
 		
-		$this->newLine();
-		$this->line(SqlFormatter::format($sql));
+		return SqlFormatter::format($sql);
 	}
 	
 	protected function printIntro(): void
@@ -278,18 +290,21 @@ class ConveyorBelt
 	
 	protected function showSummary(): void
 	{
-		if (count($this->exceptions)) {
+		if ($count = count($this->exceptions)) {
 			$this->newLine();
+			$this->error('[ '.$count.' '.Str::plural('Exception', $count).' Triggered During Run ]');
+			$table = collect($this->exceptions)
+				->map(fn(CollectedException $exception) => [$exception->key, get_class($exception->exception), (string) $exception]);
 			
-			$this->getOutput()->section('Exceptions Triggered During Run');
-			
-			foreach ($this->exceptions as $exception) {
-				$this->error($exception);
-				$this->newLine();
-			}
+			$this->table([Str::title($this->command->rowName()), 'Exception', 'Message'], $table);
 			
 			$this->abort();
 		}
+	}
+	
+	public function table($headers, $rows, $tableStyle = 'box', array $columnStyles = [])
+	{
+		$this->defaultTable($headers, $rows, $tableStyle, $columnStyles);
 	}
 	
 	protected function addConveyorBeltOptions(): void
@@ -300,6 +315,7 @@ class ConveyorBelt
 		$definition->addOption(new InputOption('log-sql'));
 		$definition->addOption(new InputOption('step'));
 		$definition->addOption(new InputOption('diff'));
+		$definition->addOption(new InputOption('show-memory-usage'));
 	}
 	
 	/**

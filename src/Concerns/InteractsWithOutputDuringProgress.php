@@ -6,6 +6,16 @@ use Closure;
 
 trait InteractsWithOutputDuringProgress
 {
+	public function progressMessage($message)
+	{
+		$this->conveyor_belt->progress->message($message);
+	}
+	
+	public function progressSubMessage($message)
+	{
+		$this->conveyor_belt->progress->subMessage($message);
+	}
+	
 	public function withoutProgress(Closure $callback)
 	{
 		return $this->conveyor_belt->progress->interrupt($callback);
