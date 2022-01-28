@@ -311,11 +311,11 @@ class ConveyorBelt
 	{
 		$definition = $this->command->getDefinition();
 		
-		$definition->addOption(new InputOption('dump-sql'));
-		$definition->addOption(new InputOption('log-sql'));
-		$definition->addOption(new InputOption('step'));
-		$definition->addOption(new InputOption('diff'));
-		$definition->addOption(new InputOption('show-memory-usage'));
+		$definition->addOption(new InputOption('dump-sql', null, null, 'Dump the SQL of the query this command will execute'));
+		$definition->addOption(new InputOption('log-sql', null, null, 'Log all SQL queries executed and print them'));
+		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->rowName()} one-by-one"));
+		$definition->addOption(new InputOption('diff', null, null, 'See a diff of any changes made to your models'));
+		$definition->addOption(new InputOption('show-memory-usage', null, null, 'Include the command’s memory usage in the progress bar'));
 	}
 	
 	/**
