@@ -9,6 +9,7 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 - Added config
 - Added translations
+- Added a `--pause-on-error` option
 
 ## [0.0.1] - 2022-01-28
 
