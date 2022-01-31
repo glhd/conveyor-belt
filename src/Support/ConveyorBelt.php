@@ -178,7 +178,7 @@ class ConveyorBelt
 	
 	protected function shouldThrowRowException(): bool
 	{
-		return ! $this->command->collectExceptions() 
+		return ! $this->command->collectExceptions()
 			&& ! $this->option('pause-on-error');
 	}
 	
@@ -346,7 +346,7 @@ class ConveyorBelt
 		$headers = [
 			Str::title($this->command->rowName()),
 			trans('conveyor-belt::messages.exception_heading'),
-			trans('conveyor-belt::messages.message_heading')
+			trans('conveyor-belt::messages.message_heading'),
 		];
 		
 		$rows = collect($this->exceptions)
