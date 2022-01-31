@@ -163,13 +163,51 @@ class ConveyorBelt
 	
 	protected function handleRowException(Throwable $exception, $item): void
 	{
-		if (! $this->command->collectExceptions()) {
+		if ($this->shouldThrowRowException()) {
 			$this->progress->finish();
-			
 			throw $exception;
 		}
 		
-		$this->exceptions[] = new CollectedException($exception, $item);
+		$this->printError($exception);
+		$this->pauseOnErrorIfRequested();
+		
+		if ($this->command->collectExceptions()) {
+			$this->exceptions[] = new CollectedException($exception, $item);
+		}
+	}
+	
+	protected function shouldThrowRowException(): bool
+	{
+		return ! $this->command->collectExceptions() 
+			&& ! $this->option('pause-on-error');
+	}
+	
+	protected function printError(Throwable $exception): void
+	{
+		if ($this->output->isVerbose()) {
+			$this->progress->interrupt(fn() => $this->error($exception));
+			return;
+		}
+		
+		if ($this->option('pause-on-error')) {
+			$this->progress->interrupt(fn() => $this->error(get_class($exception).': '.$exception->getMessage()));
+		}
+	}
+	
+	protected function pauseOnErrorIfRequested(): void
+	{
+		if (! $this->option('pause-on-error')) {
+			return;
+		}
+		
+		$this->progress->pause();
+		
+		if (! $this->confirm(trans('conveyor-belt::messages.confirm_continue'))) {
+			$this->progress->finish();
+			$this->abort(trans('conveyor-belt::messages.operation_cancelled'));
+		}
+		
+		$this->progress->resume();
 	}
 	
 	protected function logSql(): void
@@ -331,6 +369,7 @@ class ConveyorBelt
 		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->rowName()} one-by-one"));
 		$definition->addOption(new InputOption('diff', null, null, 'See a diff of any changes made to your models'));
 		$definition->addOption(new InputOption('show-memory-usage', null, null, 'Include the command’s memory usage in the progress bar'));
+		$definition->addOption(new InputOption('pause-on-error', null, null, 'Pause if an exception is thrown'));
 	}
 	
 	/**

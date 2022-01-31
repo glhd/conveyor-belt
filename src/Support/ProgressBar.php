@@ -66,6 +66,7 @@ class ProgressBar
 	public function finish(): self
 	{
 		if ($this->bar) {
+			$this->bar->display();
 			$this->bar->finish();
 		}
 		
