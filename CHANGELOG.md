@@ -5,6 +5,8 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.1.0] - 2022-01-31
+
 ## Added
 
 - Added config
@@ -27,5 +29,5 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Security` in case of vulnerabilities.
 
 [Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.0.1...HEAD
-
+[0.1.0]: https://github.com/glhd/conveyor-belt/compare/0.0.1...0.1.0
 [0.0.1]: https://github.com/glhd/conveyor-belt/compare/0.0.1...0.0.1
