@@ -35,6 +35,8 @@
 
 Conveyor Belt provides all the underlying mechanics necessary to write artisan commands that process lots of data efficiently.
 
+![Demo](/img/demo.svg)
+
 ## Installation
 
 ```shell

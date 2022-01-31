@@ -5,6 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## Added
+
+- Added config
+- Added translations
+
 ## [0.0.1] - 2022-01-28
 
 ## Added

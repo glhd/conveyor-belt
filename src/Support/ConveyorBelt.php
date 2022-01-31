@@ -181,6 +181,10 @@ class ConveyorBelt
 		$table = collect(DB::getQueryLog())
 			->map(fn($log) => [$this->getFormattedQuery($log['query'], $log['bindings']), $log['time']]);
 		
+		if ($table->isEmpty()) {
+			return;
+		}
+		
 		$this->newLine();
 		$this->line(trans_choice('conveyor-belt::messages.queries_executed', $table->count()));
 		$this->table([trans('conveyor-belt::messages.query_heading'), trans('conveyor-belt::messages.time_heading')], $table);
