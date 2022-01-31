@@ -47,6 +47,9 @@ Conveyor Belt provides all the underlying mechanics necessary to write artisan c
 ## See what data is changed by your commands
 ![Screencast of diff behavior](img/diff.svg)
 
+## And so much more
+![Screencast of help view](img/more.svg)
+
 ## Installation
 
 ```shell
