@@ -26,11 +26,15 @@ class ProgressBar
 		return null !== $this->bar;
 	}
 	
-	public function start(int $count, string $row_singular = 'record'): self
+	public function start(int $count, string $row_singular = 'record', string $row_plural = 'records'): self
 	{
 		$this->newLine();
 		
-		$this->line(sprintf('Processing <info>%s</info> %s…', number_format($count), Str::plural($row_singular, $count)));
+		$this->line(trans_choice('conveyor-belt::messages.processing_records', $count, [
+			'count' => $count,
+			'record' => $row_singular,
+			'records' => $row_plural,
+		]));
 		
 		$this->newLine();
 		
@@ -93,7 +97,7 @@ class ProgressBar
 		}
 		
 		$message = trim($message);
-		$this->bar->setMessage(Str::before($this->bar->getMessage(), '→')." → {$message}");
+		$this->bar->setMessage(Str::of($this->bar->getMessage())->before('→')->trim()->append(" → {$message}"));
 		
 		return $this;
 	}
@@ -130,9 +134,9 @@ class ProgressBar
 	protected function getFormat(): string
 	{
 		if ($this->input->getOption('show-memory-usage')) {
-			return '%bar% %current%/%max% (%memory%, ~%remaining%) %message%';
+			return config('conveyor-belt.progress_format_with_memory', '%bar% %current%/%max% (%memory%, ~%remaining%) %message%');
 		}
 		
-		return '%bar% %current%/%max% (~%remaining%) %message%';
+		return config('conveyor-belt.progress_format', '%bar% %current%/%max% (~%remaining%) %message%');
 	}
 }

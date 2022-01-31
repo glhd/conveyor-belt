@@ -27,7 +27,8 @@ trait IteratesQuery
 	
 	public function beforeFirstQuery(): void
 	{
-		// Do nothing by default
+		// Implement this if you need to do some work before the initial
+		// query is executed
 	}
 	
 	public function beforeFirstRow(): void
@@ -42,7 +43,7 @@ trait IteratesQuery
 	
 	public function rowName(): string
 	{
-		return 'record';
+		return trans('conveyor-belt::messages.record');
 	}
 	
 	public function rowNamePlural(): string
@@ -52,7 +53,7 @@ trait IteratesQuery
 	
 	public function chunkCount(): int
 	{
-		return 1000;
+		return config('conveyor-belt.chunk_count', 1000);
 	}
 	
 	public function prepareChunk(Collection $chunk): void
@@ -66,6 +67,6 @@ trait IteratesQuery
 	
 	public function collectExceptions(): bool
 	{
-		return false;
+		return config('conveyor-belt.collect_exceptions', false);
 	}
 }

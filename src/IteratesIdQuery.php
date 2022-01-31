@@ -3,6 +3,7 @@
 namespace Glhd\ConveyorBelt;
 
 use Closure;
+use Illuminate\Support\Str;
 
 trait IteratesIdQuery
 {
@@ -25,8 +26,6 @@ trait IteratesIdQuery
 	
 	protected function idAliasName(): string
 	{
-		$column_segments = explode('.', $this->idColumnName());
-		
-		return array_pop($column_segments);
+		return Str::afterLast($this->idColumnName(), '.');
 	}
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use SqlFormatter;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,6 +32,7 @@ class ConveyorBelt
 	/** @var \Glhd\ConveyorBelt\IteratesQuery|\Illuminate\Console\Command */
 	protected $command;
 	
+	/** @var BaseBuilder|EloquentBuilder|Relation */
 	protected $query = null;
 	
 	/** @var \Glhd\ConveyorBelt\Support\CollectedException[] */
@@ -40,7 +42,7 @@ class ConveyorBelt
 	{
 		$this->command = $command;
 		
-		$this->addConveyorBeltOptions();
+		$this->addConveyorBeltOptions($command->getDefinition());
 	}
 	
 	public function initialize(InputInterface $input, OutputStyle $output): void
@@ -92,11 +94,11 @@ class ConveyorBelt
 	protected function start(): void
 	{
 		if (! $count = $this->query()->count()) {
-			$this->command->info("There are no {$this->command->rowNamePlural()} that match your query.");
+			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->rowNamePlural()]));
 			return;
 		}
 		
-		$this->progress->start($count, $this->command->rowName());
+		$this->progress->start($count, $this->command->rowName(), $this->command->rowNamePlural());
 		
 		if ($this->command->useTransaction()) {
 			DB::transaction(fn() => $this->executeQuery());
@@ -111,7 +113,7 @@ class ConveyorBelt
 	{
 		$this->command->afterLastRow();
 		
-		$this->showSummary();
+		$this->showCollectedExceptions();
 	}
 	
 	protected function abort(string $message = '', int $code = Command::FAILURE): void
@@ -180,8 +182,8 @@ class ConveyorBelt
 			->map(fn($log) => [$this->getFormattedQuery($log['query'], $log['bindings']), $log['time']]);
 		
 		$this->newLine();
-		$this->line(Str::plural('Query', $table->count()).' Executed');
-		$this->table(['Query', 'Time'], $table);
+		$this->line(trans_choice('conveyor-belt::messages.queries_executed', $table->count()));
+		$this->table([trans('conveyor-belt::messages.query_heading'), trans('conveyor-belt::messages.time_heading')], $table);
 		
 		DB::flushQueryLog();
 	}
@@ -214,16 +216,17 @@ class ConveyorBelt
 		$this->progress->pause();
 		
 		$this->newLine();
-		$this->line('Changes to '.Str::title($this->command->rowName()));
-		$this->table(['', 'Before', 'After'], $table);
+		
+		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->rowName()]));
+		$this->table([trans('conveyor-belt::messages.before_heading'), trans('conveyor-belt::messages.after_heading')], $table);
 		
 		$this->progress->resume();
 	}
 	
 	protected function pauseIfStepping(): void
 	{
-		if ($this->option('step') && ! $this->confirm('Continue?', true)) {
-			$this->abort('Operation cancelled.');
+		if ($this->option('step') && ! $this->confirm(trans('conveyor-belt::messages.confirm_continue'), true)) {
+			$this->abort(trans('conveyor-belt::messages.operation_cancelled'));
 		}
 	}
 	
@@ -281,25 +284,35 @@ class ConveyorBelt
 	
 	protected function printIntro(): void
 	{
-		$transaction_status = $this->command->useTransaction()
-			? '(using a database transaction)'
-			: '(no database transaction)';
+		$message = $this->command->useTransaction()
+			? trans('conveyor-belt::messages.querying_with_transaction', ['records' => $this->command->rowNamePlural()])
+			: trans('conveyor-belt::messages.querying_without_transaction', ['records' => $this->command->rowNamePlural()]);
 		
-		$this->info("Querying {$this->command->rowNamePlural()} {$transaction_status}...");
+		$this->info($message);
 	}
 	
-	protected function showSummary(): void
+	protected function showCollectedExceptions(): void
 	{
-		if ($count = count($this->exceptions)) {
-			$this->newLine();
-			$this->error('[ '.$count.' '.Str::plural('Exception', $count).' Triggered During Run ]');
-			$table = collect($this->exceptions)
-				->map(fn(CollectedException $exception) => [$exception->key, get_class($exception->exception), (string) $exception]);
-			
-			$this->table([Str::title($this->command->rowName()), 'Exception', 'Message'], $table);
-			
-			$this->abort();
+		if (! $count = count($this->exceptions)) {
+			return;
 		}
+		
+		$this->newLine();
+		
+		$this->error(trans_choice('conveyor-belt::messages.exceptions_triggered', $count));
+		
+		$headers = [
+			Str::title($this->command->rowName()),
+			trans('conveyor-belt::messages.exception_heading'),
+			trans('conveyor-belt::messages.message_heading')
+		];
+		
+		$rows = collect($this->exceptions)
+			->map(fn(CollectedException $exception) => [$exception->key, get_class($exception->exception), (string) $exception]);
+		
+		$this->table($headers, $rows);
+		
+		$this->abort();
 	}
 	
 	public function table($headers, $rows, $tableStyle = 'box', array $columnStyles = [])
@@ -307,10 +320,8 @@ class ConveyorBelt
 		$this->defaultTable($headers, $rows, $tableStyle, $columnStyles);
 	}
 	
-	protected function addConveyorBeltOptions(): void
+	protected function addConveyorBeltOptions(InputDefinition $definition): void
 	{
-		$definition = $this->command->getDefinition();
-		
 		$definition->addOption(new InputOption('dump-sql', null, null, 'Dump the SQL of the query this command will execute'));
 		$definition->addOption(new InputOption('log-sql', null, null, 'Log all SQL queries executed and print them'));
 		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->rowName()} one-by-one"));
