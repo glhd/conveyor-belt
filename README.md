@@ -35,7 +35,17 @@
 
 Conveyor Belt provides all the underlying mechanics necessary to write artisan commands that process lots of data efficiently.
 
-![Demo](/img/demo.svg)
+## Quickly process 1000's of records
+![Screencast of default behavior](img/default.svg)
+
+## Get verbose output when necessary
+![Screencast of verbose behavior](img/verbose.svg)
+
+## Step through execution & log operations if needed
+![Screencast of step behavior](img/step.svg)
+
+## See what data is changed by your commands
+![Screencast of diff behavior](img/diff.svg)
 
 ## Installation
 
