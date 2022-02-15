@@ -2,7 +2,6 @@
 
 namespace Glhd\ConveyorBelt\Concerns;
 
-use Closure;
 use Glhd\ConveyorBelt\Belts\ConveyorBelt;
 use Illuminate\Support\Str;
 use InvalidArgumentException;

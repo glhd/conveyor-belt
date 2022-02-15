@@ -7,7 +7,6 @@ use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Box\Spout\Reader\CSV\Reader as CsvReader;
 use Box\Spout\Reader\ODS\Reader as OdsReader;
 use Box\Spout\Reader\ReaderInterface;
-use Box\Spout\Reader\SheetInterface;
 use Box\Spout\Reader\XLSX\Reader as XlsxReader;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;

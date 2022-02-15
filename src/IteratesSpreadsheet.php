@@ -2,7 +2,6 @@
 
 namespace Glhd\ConveyorBelt;
 
-use Box\Spout\Common\Entity\Cell;
 use Box\Spout\Common\Helper\EncodingHelper;
 use Glhd\ConveyorBelt\Belts\ConveyorBelt;
 use Glhd\ConveyorBelt\Belts\SpreadsheetBelt;
@@ -14,6 +13,7 @@ use Illuminate\Support\Str;
  * @property bool $use_headings
  * @property bool $preserve_empty_rows
  * @property bool $format_dates
+ * @property string $filename
  * @property string $excel_temp_directory
  * @property string $field_delimiter
  * @property string $field_enclosure

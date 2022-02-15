@@ -16,33 +16,22 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * @property \Glhd\ConveyorBelt\IteratesJson|\Symfony\Component\Console\Command\Command $command
+ */
 class JsonBelt extends ConveyorBelt
 {
 	protected function collect(): Enumerable
 	{
-		return new LazyCollection($this->getItems());
+		return new LazyCollection($this->command->getItems($this->getItemsOptions()));
 	}
 	
-	protected function getItems(): Items
-	{
-		if (method_exists($this->command, 'jsonFile')) {
-			return Items::fromFile($this->command->jsonFile());
-		}
-		
-		if (method_exists($this->command, 'jsonData')) {
-			return Items::fromIterable($this->command->jsonData());
-		}
-		
-		$basename = class_basename($this->command);
-		$this->abort("You must implement {$basename}::jsonFile() or {$basename}::jsonData()", Command::INVALID);
-	}
-	
-	protected function getItemsConfig(): array
+	protected function getItemsOptions(): array
 	{
 		$config = [];
 		
-		if (method_exists($this->command, 'jsonPointer')) {
-			$config['pointer'] = $this->command->jsonPointer();
+		if ($pointer = $this->command->getJsonPointer()) {
+			$config['pointer'] = $pointer;
 		}
 		
 		return $config;

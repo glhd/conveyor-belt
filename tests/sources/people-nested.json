@@ -1,0 +1,26 @@
+﻿{
+	"results": {
+		"people": [
+			{
+				"full_name": "Chris Morrell",
+				"company": "Galahad, Inc.",
+				"quote": "\"I hate final classes.\""
+			},
+			{
+				"full_name": "Bogdan Kharchenko",
+				"company": "Galahad, Inc.",
+				"quote": "\"It works.\""
+			},
+			{
+				"full_name": "Mohamed Said",
+				"company": "Laravel LLC",
+				"quote": null
+			},
+			{
+				"full_name": "Taylor Otwell",
+				"company": "Laravel LLC",
+				"quote": "\"No plans to merge.\""
+			}
+		]
+	}
+}

@@ -2,37 +2,87 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Glhd\ConveyorBelt\Tests\Commands\PeopleFromSpreadsheetCommand;
+use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 class IteratesSpreadsheetTest extends TestCase
 {
-	public function test_it_reads_a_csv_file(): void
+	/** @dataProvider dataProvider */
+	public function test_it_reads_spreadsheets(string $filename, bool $step, $exceptions): void
 	{
-		$this->artisan(PeopleFromSpreadsheetCommand::class, ['--format' => 'csv'])
-			->assertSuccessful();
+		// FIXME: Test dates
 		
-		$expected = [
-			'Chris Morrell from Galahad, Inc. says: "I hate final classes."',
-			'Bogdan Kharchenko from Galahad, Inc. says: "It works."',
-			'Mohamed Said from Laravel LLC says: ',
-			'Taylor Otwell from Laravel LLC says: "No plans to merge."',
+		$expectations = [
+			(object) ['full_name' => 'Chris Morrell', 'company' => 'Galahad, Inc.', 'quote' => '"I hate final classes."'],
+			(object) ['full_name' => 'Bogdan Kharchenko', 'company' => 'Galahad, Inc.', 'quote' => '"It works."'],
+			(object) ['full_name' => 'Mohamed Said', 'company' => 'Laravel LLC', 'quote' => ''],
+			(object) ['full_name' => 'Taylor Otwell', 'company' => 'Laravel LLC', 'quote' => '"No plans to merge."'],
 		];
 		
-		$this->assertEquals($expected, PeopleFromSpreadsheetCommand::$last_execution);
+		$this->app->instance('tests.row_handler', function($row) use (&$expectations, $exceptions) {
+			$expected = array_shift($expectations);
+			$this->assertEquals($expected, $row);
+			
+			if ($exceptions && 'Bogdan Kharchenko' === $row->full_name) {
+				throw new RuntimeException('This should be caught.');
+			}
+		});
+		
+		if ('throw' === $exceptions) {
+			$this->expectException(RuntimeException::class);
+		}
+		
+		$command = $this->artisan(TestSpreadsheetCommand::class, [
+			'filename' => $filename,
+			'--step' => $step,
+			'--throw' => 'throw' === $exceptions,
+		]);
+		
+		if ($step && 'throw' === $exceptions) {
+			// If we're throwing exceptions, we'll only have 1 successful iteration
+			$command->expectsQuestion('Continue?', true);
+		} elseif ($step) {
+			// Otherwise we should have 4 iterations
+			foreach (range(1, 4) as $_) {
+				$command->expectsQuestion('Continue?', true);
+			}
+		}
+		
+		if ($exceptions) {
+			$command->assertFailed();
+		} else {
+			$command->assertSuccessful();
+		}
+		
+		$command->run();
+		
+		$this->assertEmpty($expectations);
 	}
 	
-	public function test_it_reads_an_excel_file(): void
+	public function dataProvider()
 	{
-		$this->artisan(PeopleFromSpreadsheetCommand::class, ['--format' => 'xlsx'])
-			->assertSuccessful();
-		
-		$expected = [
-			'Chris Morrell from Galahad, Inc. says: "I hate final classes."',
-			'Bogdan Kharchenko from Galahad, Inc. says: "It works."',
-			'Mohamed Said from Laravel LLC says: ',
-			'Taylor Otwell from Laravel LLC says: "No plans to merge."',
+		$filenames = [
+			__DIR__.'/sources/people.csv',
+			__DIR__.'/sources/people.xlsx',
 		];
 		
-		$this->assertEquals($expected, PeopleFromSpreadsheetCommand::$last_execution);
+		foreach ($filenames as $filename) {
+			foreach ([false, true] as $step) {
+				foreach ([false, 'throw', 'collect'] as $exceptions) {
+					$label = (implode('; ', array_filter([
+						Str::of($filename)->afterLast('.')->upper(),
+						$step
+							? 'step mode'
+							: null,
+						$exceptions
+							? "{$exceptions} exceptions"
+							: null,
+					])));
+					
+					yield $label => [$filename, $step, $exceptions];
+				}
+			}
+		}
 	}
 }
