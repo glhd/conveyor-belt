@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Command\Command;
 
 /**
+ * @method beforeFirstRow()
+ * @method afterLastRow()
  * @method handleRow(\Illuminate\Database\Eloquent\Model|mixed $item)
  * @property bool $collect_exceptions
  * @property string $row_name
@@ -23,16 +25,6 @@ trait IteratesData
 	public function handle()
 	{
 		return $this->handleWithConveyorBelt();
-	}
-	
-	public function beforeFirstRow(): void
-	{
-		// Do nothing by default
-	}
-	
-	public function afterLastRow(): void
-	{
-		// Do nothing by default
 	}
 	
 	public function getRowName(): string

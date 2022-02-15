@@ -3,14 +3,13 @@
 namespace Glhd\ConveyorBelt\Tests\Commands;
 
 use Glhd\ConveyorBelt\IteratesJson;
-use Illuminate\Console\Command;
 
-class TestJsonFileCommand extends Command
+class TestJsonFileCommand extends TestCommand
 {
 	use IteratesJson;
 	
 	public $collect_exceptions = true;
-
+	
 	public $json_pointer = null;
 	
 	protected $signature = 'test:json-file {filename} {--throw} {--pointer=}';
@@ -19,11 +18,7 @@ class TestJsonFileCommand extends Command
 	{
 		$this->collect_exceptions = ! $this->option('throw');
 		$this->json_pointer = $this->option('pointer');
-	}
-	
-	public function handleRow(\stdClass $item)
-	{
-		$handler = app('tests.row_handler');
-		$handler($item);
+		
+		$this->callTestCallback();
 	}
 }

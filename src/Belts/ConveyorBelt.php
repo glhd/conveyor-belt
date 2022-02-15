@@ -77,7 +77,9 @@ abstract class ConveyorBelt
 		$this->verifyCommandSetup();
 		$this->setVerbosityBasedOnOptions();
 		
-		$this->command->beforeFirstRow();
+		if (method_exists($this->command, 'beforeFirstRow')) {
+			$this->command->beforeFirstRow();
+		}
 	}
 	
 	protected function header(): void
@@ -114,7 +116,9 @@ abstract class ConveyorBelt
 	{
 		$this->progress->finish();
 		
-		$this->command->afterLastRow();
+		if (method_exists($this->command, 'afterLastRow')) {
+			$this->command->afterLastRow();
+		}
 		
 		$this->showCollectedExceptions();
 	}

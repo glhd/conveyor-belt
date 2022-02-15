@@ -3,9 +3,8 @@
 namespace Glhd\ConveyorBelt\Tests\Commands;
 
 use Glhd\ConveyorBelt\IteratesSpreadsheet;
-use Illuminate\Console\Command;
 
-class TestSpreadsheetCommand extends Command
+class TestSpreadsheetCommand extends TestCommand
 {
 	use IteratesSpreadsheet;
 	
@@ -16,11 +15,7 @@ class TestSpreadsheetCommand extends Command
 	public function beforeFirstRow(): void
 	{
 		$this->collect_exceptions = ! $this->option('throw');
-	}
-	
-	public function handleRow(\stdClass $item)
-	{
-		$handler = app('tests.row_handler');
-		$handler($item);
+		
+		$this->callTestCallback();
 	}
 }

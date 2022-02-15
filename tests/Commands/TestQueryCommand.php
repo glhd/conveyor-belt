@@ -6,7 +6,7 @@ use Glhd\ConveyorBelt\IteratesQuery;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use Illuminate\Console\Command;
 
-class TestQueryCommand extends Command
+class TestQueryCommand extends TestCommand
 {
 	use IteratesQuery;
 	
@@ -20,6 +20,8 @@ class TestQueryCommand extends Command
 	{
 		$this->collect_exceptions = ! $this->option('throw');
 		$this->use_transaction = true === $this->option('transaction');
+		
+		$this->callTestCallback();
 	}
 	
 	public function query()
@@ -32,11 +34,5 @@ class TestQueryCommand extends Command
 		}
 		
 		$this->abort('Invalid case.');
-	}
-	
-	public function handleRow($item)
-	{
-		$handler = app('tests.row_handler');
-		$handler($item);
 	}
 }

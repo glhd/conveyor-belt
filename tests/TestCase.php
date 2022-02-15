@@ -7,12 +7,15 @@ use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\RegistersTestCallbacks;
 use Glhd\LaravelDumper\LaravelDumperServiceProvider;
 use Illuminate\Console\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
+	use RegistersTestCallbacks;
+	
 	/** @before */
 	public function registerTestCommands(): void
 	{

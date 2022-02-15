@@ -4,9 +4,8 @@ namespace Glhd\ConveyorBelt\Tests\Commands;
 
 use Glhd\ConveyorBelt\IteratesIdQuery;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use Illuminate\Console\Command;
 
-class TestIdQueryCommand extends Command
+class TestIdQueryCommand extends TestCommand
 {
 	use IteratesIdQuery;
 	
@@ -20,6 +19,8 @@ class TestIdQueryCommand extends Command
 	{
 		$this->collect_exceptions = ! $this->option('throw');
 		$this->use_transaction = true === $this->option('transaction');
+		
+		$this->callTestCallback();
 	}
 	
 	public function query()
@@ -32,11 +33,5 @@ class TestIdQueryCommand extends Command
 		}
 		
 		$this->abort('Invalid case.');
-	}
-	
-	public function handleRow($item)
-	{
-		$handler = app('tests.row_handler');
-		$handler($item);
 	}
 }

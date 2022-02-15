@@ -18,7 +18,7 @@ class IteratesJsonTest extends TestCase
 			(object) ['full_name' => 'Taylor Otwell', 'company' => 'Laravel LLC', 'quote' => '"No plans to merge."'],
 		];
 		
-		$this->app->instance('tests.row_handler', function($row) use (&$expectations, $exceptions) {
+		$this->registerHandleRowCallback(function($row) use (&$expectations, $exceptions) {
 			$expected = array_shift($expectations);
 			$this->assertEquals($expected, $row);
 			
@@ -57,6 +57,7 @@ class IteratesJsonTest extends TestCase
 		$command->run();
 		
 		$this->assertEmpty($expectations);
+		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
 	public function dataProvider()

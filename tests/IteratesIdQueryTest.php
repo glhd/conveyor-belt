@@ -5,10 +5,6 @@ namespace Glhd\ConveyorBelt\Tests;
 use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use Illuminate\Database\Events\TransactionBeginning;
-use Illuminate\Database\Events\TransactionCommitted;
-use Illuminate\Database\Events\TransactionRolledBack;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class IteratesIdQueryTest extends DatabaseTestCase
@@ -25,7 +21,7 @@ class IteratesIdQueryTest extends DatabaseTestCase
 			'Mohamed Said',
 		];
 		
-		$this->app->instance('tests.row_handler', function($row) use (&$expectations, $case, $exceptions) {
+		$this->registerHandleRowCallback(function($row) use (&$expectations, $case, $exceptions) {
 			$expected = array_shift($expectations);
 			$this->assertEquals($expected, $row->name);
 			
@@ -72,6 +68,7 @@ class IteratesIdQueryTest extends DatabaseTestCase
 		}
 		
 		$this->assertEmpty($expectations);
+		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
 	public function dataProvider()

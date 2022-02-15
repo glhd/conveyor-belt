@@ -28,7 +28,7 @@ class IteratesQueryTest extends DatabaseTestCase
 			'Taylor Otwell',
 		];
 		
-		$this->app->instance('tests.row_handler', function($row) use (&$expectations, $case, $exceptions) {
+		$this->registerHandleRowCallback(function($row) use (&$expectations, $case, $exceptions) {
 			$expected = array_shift($expectations);
 			$this->assertEquals($expected, $row->name);
 			
@@ -73,6 +73,7 @@ class IteratesQueryTest extends DatabaseTestCase
 		}
 		
 		$this->assertEmpty($expectations);
+		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
 	public function dataProvider()
