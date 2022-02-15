@@ -26,7 +26,7 @@ class ProgressBar
 		return null !== $this->bar;
 	}
 	
-	public function start(int $count, string $row_singular = 'record', string $row_plural = 'records'): self
+	public function start(?int $count, string $row_singular = 'record', string $row_plural = 'records'): self
 	{
 		$this->newLine();
 		

@@ -2,27 +2,25 @@
 
 namespace Glhd\ConveyorBelt;
 
-use Closure;
-use Glhd\ConveyorBelt\Concerns\InteractsWithOutputDuringProgress;
-use Glhd\ConveyorBelt\Concerns\RespectsVerbosity;
-use Glhd\ConveyorBelt\Concerns\SetsUpConveyorBelt;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
+use Glhd\ConveyorBelt\Belts\ConveyorBelt;
+use Glhd\ConveyorBelt\Belts\QueryBelt;
+use Illuminate\Support\Enumerable;
 
+/**
+ * @property QueryBelt $conveyor_belt
+ * @method \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Relations\Relation query()
+ */
 trait IteratesQuery
 {
-	use InteractsWithOutputDuringProgress;
-	use RespectsVerbosity;
-	use SetsUpConveyorBelt;
+	use IteratesData;
 	
-	public function handle()
+	/**
+	 * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Relations\Relation $query
+	 * @return \Illuminate\Support\Enumerable
+	 */
+	public function queryToEnumerable($query): Enumerable
 	{
-		return $this->handleWithConveyorBelt();
-	}
-	
-	public function iterateOverQuery($query, Closure $handler): void
-	{
-		$query->chunk($this->chunkCount(), $handler);
+		return $query->lazy($this->chunkCount());
 	}
 	
 	public function beforeFirstQuery(): void
@@ -31,33 +29,9 @@ trait IteratesQuery
 		// query is executed
 	}
 	
-	public function beforeFirstRow(): void
-	{
-		// Do nothing by default
-	}
-	
-	public function afterLastRow(): void
-	{
-		// Do nothing by default
-	}
-	
-	public function rowName(): string
-	{
-		return trans('conveyor-belt::messages.record');
-	}
-	
-	public function rowNamePlural(): string
-	{
-		return Str::plural($this->rowName());
-	}
-	
 	public function chunkCount(): int
 	{
 		return config('conveyor-belt.chunk_count', 1000);
-	}
-	
-	public function prepareChunk(Collection $chunk): void
-	{
 	}
 	
 	public function useTransaction(): bool
@@ -65,8 +39,8 @@ trait IteratesQuery
 		return false;
 	}
 	
-	public function collectExceptions(): bool
+	protected function makeConveyorBelt(): ConveyorBelt
 	{
-		return config('conveyor-belt.collect_exceptions', false);
+		return new QueryBelt($this);
 	}
 }

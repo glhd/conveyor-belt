@@ -2,21 +2,20 @@
 
 namespace Glhd\ConveyorBelt;
 
-use Closure;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Str;
 
 trait IteratesIdQuery
 {
 	use IteratesQuery;
 	
-	public function iterateOverQuery($query, Closure $handler): void
+	/**
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @return \Illuminate\Support\Enumerable
+	 */
+	public function queryToEnumerable($query): Enumerable
 	{
-		$query->chunkById(
-			$this->chunkCount(),
-			$handler,
-			$this->idColumnName(),
-			$this->idAliasName()
-		);
+		return $query->lazyById($this->chunkCount(), $this->idColumnName(), $this->idAliasName());
 	}
 	
 	protected function idColumnName(): string

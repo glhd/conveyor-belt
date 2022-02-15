@@ -1,6 +1,7 @@
 <?php
 
 return [
+	'querying' => 'Querying :records…',
 	'querying_without_transaction' => 'Querying :records (no database transaction)…',
 	'querying_with_transaction' => 'Querying :records (using a database transaction)…',
 	
