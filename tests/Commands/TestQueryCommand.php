@@ -4,7 +4,6 @@ namespace Glhd\ConveyorBelt\Tests\Commands;
 
 use Glhd\ConveyorBelt\IteratesQuery;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use Illuminate\Console\Command;
 
 class TestQueryCommand extends TestCommand
 {

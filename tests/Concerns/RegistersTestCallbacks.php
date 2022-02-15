@@ -3,7 +3,6 @@
 namespace Glhd\ConveyorBelt\Tests\Concerns;
 
 use Closure;
-use Illuminate\Testing\PendingCommand;
 
 trait RegistersTestCallbacks
 {

@@ -2,23 +2,17 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
-use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
+use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
-use Glhd\ConveyorBelt\Tests\Concerns\TestsStepMode;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use Illuminate\Database\Events\TransactionBeginning;
-use Illuminate\Database\Events\TransactionCommitted;
-use Illuminate\Database\Events\TransactionRolledBack;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
 use SqlFormatter;
 
 class IteratesQueryTest extends DatabaseTestCase
 {
 	use TestsDatabaseTransactions;
-	use TestsCommonCommandVariations;
+	use CallsTestCommands;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
@@ -43,12 +37,16 @@ class IteratesQueryTest extends DatabaseTestCase
 			}
 		});
 		
-		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestQueryCommand::class, [
+		$parameters = [
 			'case' => $case,
 			'--transaction' => $transaction,
-		]);
+		];
 		
-		$command->run();
+		$this->callTestCommand(TestQueryCommand::class, $parameters)
+			->withStepMode($step)
+			->expectingSuccessfulReturnCode(false === $exceptions)
+			->throwingExceptions('throw' === $exceptions)
+			->run();
 		
 		if ($transaction) {
 			$this->assertDatabaseTransactionWasCommitted();

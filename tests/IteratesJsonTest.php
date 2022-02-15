@@ -2,15 +2,14 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
-use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
+use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class IteratesJsonTest extends TestCase
 {
-	use TestsCommonCommandVariations;
+	use CallsTestCommands;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_reads_json_files(string $filename, ?string $pointer, bool $step, $exceptions): void
@@ -31,12 +30,16 @@ class IteratesJsonTest extends TestCase
 			}
 		});
 		
-		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestJsonFileCommand::class, [
+		$parameters = [
 			'filename' => $filename,
 			'--pointer' => $pointer,
-		]);
+		];
 		
-		$command->run();
+		$this->callTestCommand(TestJsonFileCommand::class, $parameters)
+			->withStepMode($step)
+			->expectingSuccessfulReturnCode(false === $exceptions)
+			->throwingExceptions('throw' === $exceptions)
+			->run();
 		
 		$this->assertEmpty($expectations);
 		$this->assertHookMethodsWereCalledInExpectedOrder();

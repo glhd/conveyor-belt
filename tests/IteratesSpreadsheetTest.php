@@ -2,15 +2,14 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
-use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
+use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class IteratesSpreadsheetTest extends TestCase
 {
-	use TestsCommonCommandVariations;
+	use CallsTestCommands;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_reads_spreadsheets(string $filename, bool $step, $exceptions): void
@@ -33,11 +32,11 @@ class IteratesSpreadsheetTest extends TestCase
 			}
 		});
 		
-		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestSpreadsheetCommand::class, [
-			'filename' => $filename,
-		]);
-		
-		$command->run();
+		$this->callTestCommand(TestSpreadsheetCommand::class, ['filename' => $filename])
+			->withStepMode($step)
+			->expectingSuccessfulReturnCode(false === $exceptions)
+			->throwingExceptions('throw' === $exceptions)
+			->run();
 		
 		$this->assertEmpty($expectations);
 		$this->assertHookMethodsWereCalledInExpectedOrder();

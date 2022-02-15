@@ -3,7 +3,7 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
-use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
+use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use RuntimeException;
@@ -11,7 +11,7 @@ use RuntimeException;
 class IteratesIdQueryTest extends DatabaseTestCase
 {
 	use TestsDatabaseTransactions;
-	use TestsCommonCommandVariations;
+	use CallsTestCommands;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
@@ -36,12 +36,16 @@ class IteratesIdQueryTest extends DatabaseTestCase
 			}
 		});
 		
-		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestIdQueryCommand::class, [
+		$parameters = [
 			'case' => $case,
 			'--transaction' => $transaction,
-		]);
+		];
 		
-		$command->run();
+		$this->callTestCommand(TestIdQueryCommand::class, $parameters)
+			->withStepMode($step)
+			->expectingSuccessfulReturnCode(false === $exceptions)
+			->throwingExceptions('throw' === $exceptions)
+			->run();
 		
 		if ($transaction) {
 			$this->assertDatabaseTransactionWasCommitted();
