@@ -2,7 +2,9 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsStepMode;
 use Glhd\ConveyorBelt\Tests\Models\User;
@@ -16,7 +18,7 @@ use SqlFormatter;
 class IteratesQueryTest extends DatabaseTestCase
 {
 	use TestsDatabaseTransactions;
-	use TestsStepMode;
+	use TestsCommonCommandVariations;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
@@ -41,30 +43,10 @@ class IteratesQueryTest extends DatabaseTestCase
 			}
 		});
 		
-		if ('throw' === $exceptions) {
-			$this->expectException(RuntimeException::class);
-		}
-		
-		$command = $this->artisan(TestQueryCommand::class, [
+		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestQueryCommand::class, [
 			'case' => $case,
-			'--step' => $step,
-			'--throw' => 'throw' === $exceptions,
 			'--transaction' => $transaction,
 		]);
-		
-		if ($step && 'throw' === $exceptions) {
-			// If we're throwing exceptions, we'll only have 1 successful iteration
-			$this->assertStepCount($command, 1);
-		} elseif ($step) {
-			// Otherwise we should have 4 iterations
-			$this->assertStepCount($command, 4);
-		}
-		
-		if ($exceptions) {
-			$command->assertFailed();
-		} else {
-			$command->assertSuccessful();
-		}
 		
 		$command->run();
 		

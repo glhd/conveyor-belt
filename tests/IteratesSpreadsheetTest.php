@@ -2,12 +2,16 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class IteratesSpreadsheetTest extends TestCase
 {
+	use TestsCommonCommandVariations;
+	
 	/** @dataProvider dataProvider */
 	public function test_it_reads_spreadsheets(string $filename, bool $step, $exceptions): void
 	{
@@ -29,31 +33,9 @@ class IteratesSpreadsheetTest extends TestCase
 			}
 		});
 		
-		if ('throw' === $exceptions) {
-			$this->expectException(RuntimeException::class);
-		}
-		
-		$command = $this->artisan(TestSpreadsheetCommand::class, [
+		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestSpreadsheetCommand::class, [
 			'filename' => $filename,
-			'--step' => $step,
-			'--throw' => 'throw' === $exceptions,
 		]);
-		
-		if ($step && 'throw' === $exceptions) {
-			// If we're throwing exceptions, we'll only have 1 successful iteration
-			$command->expectsQuestion('Continue?', true);
-		} elseif ($step) {
-			// Otherwise we should have 4 iterations
-			foreach (range(1, 4) as $_) {
-				$command->expectsQuestion('Continue?', true);
-			}
-		}
-		
-		if ($exceptions) {
-			$command->assertFailed();
-		} else {
-			$command->assertSuccessful();
-		}
 		
 		$command->run();
 		

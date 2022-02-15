@@ -3,6 +3,7 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use RuntimeException;
@@ -10,6 +11,7 @@ use RuntimeException;
 class IteratesIdQueryTest extends DatabaseTestCase
 {
 	use TestsDatabaseTransactions;
+	use TestsCommonCommandVariations;
 	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
@@ -34,32 +36,10 @@ class IteratesIdQueryTest extends DatabaseTestCase
 			}
 		});
 		
-		if ('throw' === $exceptions) {
-			$this->expectException(RuntimeException::class);
-		}
-		
-		$command = $this->artisan(TestIdQueryCommand::class, [
+		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestIdQueryCommand::class, [
 			'case' => $case,
-			'--step' => $step,
-			'--throw' => 'throw' === $exceptions,
 			'--transaction' => $transaction,
 		]);
-		
-		if ($step && 'throw' === $exceptions) {
-			// If we're throwing exceptions, we'll only have 1 successful iteration
-			$command->expectsQuestion('Continue?', true);
-		} elseif ($step) {
-			// Otherwise we should have 4 iterations
-			foreach (range(1, 4) as $_) {
-				$command->expectsQuestion('Continue?', true);
-			}
-		}
-		
-		if ($exceptions) {
-			$command->assertFailed();
-		} else {
-			$command->assertSuccessful();
-		}
 		
 		$command->run();
 		

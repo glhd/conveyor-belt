@@ -2,12 +2,16 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsCommonCommandVariations;
 use Illuminate\Support\Str;
 use RuntimeException;
 
 class IteratesJsonTest extends TestCase
 {
+	use TestsCommonCommandVariations;
+	
 	/** @dataProvider dataProvider */
 	public function test_it_reads_json_files(string $filename, ?string $pointer, bool $step, $exceptions): void
 	{
@@ -27,32 +31,10 @@ class IteratesJsonTest extends TestCase
 			}
 		});
 		
-		if ('throw' === $exceptions) {
-			$this->expectException(RuntimeException::class);
-		}
-		
-		$command = $this->artisan(TestJsonFileCommand::class, [
+		$command = $this->setUpCommandWithCommonAssertions($exceptions, $step, TestJsonFileCommand::class, [
 			'filename' => $filename,
-			'--step' => $step,
-			'--throw' => 'throw' === $exceptions,
 			'--pointer' => $pointer,
 		]);
-		
-		if ($step && 'throw' === $exceptions) {
-			// If we're throwing exceptions, we'll only have 1 successful iteration
-			$command->expectsQuestion('Continue?', true);
-		} elseif ($step) {
-			// Otherwise we should have 4 iterations
-			foreach (range(1, 4) as $_) {
-				$command->expectsQuestion('Continue?', true);
-			}
-		}
-		
-		if ($exceptions) {
-			$command->assertFailed();
-		} else {
-			$command->assertSuccessful();
-		}
 		
 		$command->run();
 		
