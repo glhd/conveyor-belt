@@ -3,6 +3,8 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsStepMode;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
@@ -13,22 +15,12 @@ use SqlFormatter;
 
 class IteratesQueryTest extends DatabaseTestCase
 {
+	use TestsDatabaseTransactions;
+	use TestsStepMode;
+	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
 	{
-		$events = [
-			TransactionBeginning::class => false,
-			TransactionCommitted::class => false,
-			TransactionRolledBack::class => false,
-		];
-		
-		if ($transaction) {
-			$dispatcher = DB::getEventDispatcher();
-			$dispatcher->listen(array_keys($events), function($event) use (&$events) {
-				$events[get_class($event)] = true;
-			});
-		}
-		
 		$expectations = [
 			'Bogdan Kharchenko',
 			'Chris Morrell',
@@ -62,12 +54,10 @@ class IteratesQueryTest extends DatabaseTestCase
 		
 		if ($step && 'throw' === $exceptions) {
 			// If we're throwing exceptions, we'll only have 1 successful iteration
-			$command->expectsQuestion('Continue?', true);
+			$this->assertStepCount($command, 1);
 		} elseif ($step) {
 			// Otherwise we should have 4 iterations
-			foreach (range(1, 4) as $_) {
-				$command->expectsQuestion('Continue?', true);
-			}
+			$this->assertStepCount($command, 4);
 		}
 		
 		if ($exceptions) {
@@ -79,9 +69,7 @@ class IteratesQueryTest extends DatabaseTestCase
 		$command->run();
 		
 		if ($transaction) {
-			$this->assertTrue($events[TransactionBeginning::class]);
-			$this->assertTrue($events[TransactionCommitted::class]);
-			$this->assertFalse($events[TransactionRolledBack::class]);
+			$this->assertDatabaseTransactionWasCommitted();
 		}
 		
 		$this->assertEmpty($expectations);

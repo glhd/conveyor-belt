@@ -3,6 +3,7 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
+use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
@@ -12,22 +13,11 @@ use RuntimeException;
 
 class IteratesIdQueryTest extends DatabaseTestCase
 {
+	use TestsDatabaseTransactions;
+	
 	/** @dataProvider dataProvider */
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
 	{
-		$events = [
-			TransactionBeginning::class => false,
-			TransactionCommitted::class => false,
-			TransactionRolledBack::class => false,
-		];
-		
-		if ($transaction) {
-			$dispatcher = DB::getEventDispatcher();
-			$dispatcher->listen(array_keys($events), function($event) use (&$events) {
-				$events[get_class($event)] = true;
-			});
-		}
-		
 		$expectations = [
 			'Chris Morrell',
 			'Bogdan Kharchenko',
@@ -78,9 +68,7 @@ class IteratesIdQueryTest extends DatabaseTestCase
 		$command->run();
 		
 		if ($transaction) {
-			$this->assertTrue($events[TransactionBeginning::class]);
-			$this->assertTrue($events[TransactionCommitted::class]);
-			$this->assertFalse($events[TransactionRolledBack::class]);
+			$this->assertDatabaseTransactionWasCommitted();
 		}
 		
 		$this->assertEmpty($expectations);
