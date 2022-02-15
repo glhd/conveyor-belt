@@ -4,11 +4,15 @@ namespace Glhd\ConveyorBelt;
 
 use Glhd\ConveyorBelt\Concerns\InteractsWithOutputDuringProgress;
 use Glhd\ConveyorBelt\Concerns\SetsUpConveyorBelt;
+use Glhd\ConveyorBelt\Exceptions\AbortConveyorBeltException;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * @method handleRow(\Illuminate\Database\Eloquent\Model|mixed $item)
  * @property bool $collect_exceptions
+ * @property string $row_name
+ * @property string $row_name_plural
  */
 trait IteratesData
 {
@@ -31,21 +35,32 @@ trait IteratesData
 		// Do nothing by default
 	}
 	
-	public function rowName(): string
+	public function getRowName(): string
 	{
-		return trans('conveyor-belt::messages.record');
+		return $this->useCommandPropertyIfExists(
+			'row_name',
+			trans('conveyor-belt::messages.record')
+		);
 	}
 	
-	public function rowNamePlural(): string
+	public function getRowNamePlural(): string
 	{
-		return Str::plural($this->rowName());
+		return $this->useCommandPropertyIfExists(
+			'row_name_plural',
+			Str::plural($this->getRowName())
+		);
 	}
 	
 	public function shouldCollectExceptions(): bool
 	{
 		return $this->useCommandPropertyIfExists(
-			'collect_exceptions', 
-			fn() => config('conveyor-belt.collect_exceptions', false)
+			'collect_exceptions',
+			config('conveyor-belt.collect_exceptions', false)
 		);
+	}
+	
+	protected function abort(string $message = '', int $code = Command::FAILURE): void
+	{
+		throw new AbortConveyorBeltException($message, $code);
 	}
 }

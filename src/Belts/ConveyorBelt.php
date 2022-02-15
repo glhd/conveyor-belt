@@ -82,7 +82,7 @@ abstract class ConveyorBelt
 	
 	protected function header(): void
 	{
-		$this->info(trans('conveyor-belt::messages.querying', ['records' => $this->command->rowNamePlural()]));
+		$this->info(trans('conveyor-belt::messages.querying', ['records' => $this->command->getRowNamePlural()]));
 	}
 	
 	protected function start(): void
@@ -90,11 +90,11 @@ abstract class ConveyorBelt
 		$count = null;
 		
 		if ($this instanceof Countable && ! $count = $this->count()) {
-			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->rowNamePlural()]));
+			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->getRowNamePlural()]));
 			return;
 		}
 		
-		$this->progress->start($count, $this->command->rowName(), $this->command->rowNamePlural());
+		$this->progress->start($count, $this->command->getRowName(), $this->command->getRowNamePlural());
 	}
 	
 	protected function run(): void
@@ -107,7 +107,7 @@ abstract class ConveyorBelt
 	
 	protected function execute(): void
 	{
-		$this->collect()->each([$this, 'handleRow']);
+		$this->collect()->each(fn($item) => $this->handleRow($item));
 	}
 	
 	protected function finish(): void
@@ -225,7 +225,7 @@ abstract class ConveyorBelt
 		
 		$this->newLine();
 		
-		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->rowName()]));
+		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->getRowName()]));
 		$this->table([trans('conveyor-belt::messages.before_heading'), trans('conveyor-belt::messages.after_heading')], $table);
 		
 		$this->progress->resume();
@@ -263,7 +263,7 @@ abstract class ConveyorBelt
 		$this->error(trans_choice('conveyor-belt::messages.exceptions_triggered', $count));
 		
 		$headers = [
-			Str::title($this->command->rowName()),
+			Str::title($this->command->getRowName()),
 			trans('conveyor-belt::messages.exception_heading'),
 			trans('conveyor-belt::messages.message_heading'),
 		];
@@ -283,7 +283,7 @@ abstract class ConveyorBelt
 	
 	protected function addConveyorBeltOptions(InputDefinition $definition): void
 	{
-		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->rowName()} one-by-one"));
+		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->getRowName()} one-by-one"));
 		$definition->addOption(new InputOption('diff', null, null, 'See a diff of any changes made to your models'));
 		$definition->addOption(new InputOption('show-memory-usage', null, null, 'Include the command’s memory usage in the progress bar'));
 		$definition->addOption(new InputOption('pause-on-error', null, null, 'Pause if an exception is thrown'));

@@ -42,9 +42,9 @@ class QueryBelt extends ConveyorBelt implements Countable
 	
 	protected function header(): void
 	{
-		$message = $this->command->useTransaction()
-			? trans('conveyor-belt::messages.querying_with_transaction', ['records' => $this->command->rowNamePlural()])
-			: trans('conveyor-belt::messages.querying_without_transaction', ['records' => $this->command->rowNamePlural()]);
+		$message = $this->command->shouldUseTransaction()
+			? trans('conveyor-belt::messages.querying_with_transaction', ['records' => $this->command->getRowNamePlural()])
+			: trans('conveyor-belt::messages.querying_without_transaction', ['records' => $this->command->getRowNamePlural()]);
 		
 		$this->info($message);
 	}
@@ -56,7 +56,7 @@ class QueryBelt extends ConveyorBelt implements Countable
 	
 	protected function run(): void
 	{
-		if ($this->command->useTransaction()) {
+		if ($this->command->shouldUseTransaction()) {
 			DB::transaction(fn() => $this->execute());
 		} else {
 			$this->execute();

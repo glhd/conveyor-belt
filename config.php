@@ -38,6 +38,10 @@ return [
 	|
 	*/
 	
-	'progress_format' => '%bar% %current%/%max% (~%remaining%) %message%',
-	'progress_format_with_memory' => '%bar% %current%/%max% (%memory%, ~%remaining%) %message%',
+	'progress_formats' => [
+		'base' => '%bar% %current% %message%',
+		'base_with_memory' => '%bar% %current% (%memory%) %message%',
+		'count' => '%bar% %current%/%max% (~%remaining%) %message%',
+		'count_with_memory' => '%bar% %current%/%max% (%memory%, ~%remaining%) %message%',
+	],
 ];

@@ -8,6 +8,8 @@ use Illuminate\Support\Enumerable;
 
 /**
  * @property QueryBelt $conveyor_belt
+ * @property int $chunk_size
+ * @property bool $use_transaction
  * @method \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Relations\Relation query()
  */
 trait IteratesQuery
@@ -20,7 +22,7 @@ trait IteratesQuery
 	 */
 	public function queryToEnumerable($query): Enumerable
 	{
-		return $query->lazy($this->chunkCount());
+		return $query->lazy($this->getChunkSize());
 	}
 	
 	public function beforeFirstQuery(): void
@@ -29,14 +31,17 @@ trait IteratesQuery
 		// query is executed
 	}
 	
-	public function chunkCount(): int
+	public function getChunkSize(): int
 	{
-		return config('conveyor-belt.chunk_count', 1000);
+		return $this->useCommandPropertyIfExists(
+			'chunk_size',
+			config('conveyor-belt.chunk_count', 1000)
+		);
 	}
 	
-	public function useTransaction(): bool
+	public function shouldUseTransaction(): bool
 	{
-		return false;
+		return $this->useCommandPropertyIfExists('use_transaction', false);
 	}
 	
 	protected function makeConveyorBelt(): ConveyorBelt

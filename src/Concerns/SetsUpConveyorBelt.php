@@ -39,7 +39,7 @@ trait SetsUpConveyorBelt
 		$this->conveyor_belt->initialize($input, $output);
 	}
 	
-	protected function useCommandPropertyIfExists(string $snake_name, Closure $default)
+	protected function useCommandPropertyIfExists(string $snake_name, $default)
 	{
 		if (property_exists($this, $snake_name)) {
 			return $this->{$snake_name};
@@ -49,6 +49,6 @@ trait SetsUpConveyorBelt
 			return $this->{$camel_name};
 		}
 		
-		return $default();
+		return value($default);
 	}
 }

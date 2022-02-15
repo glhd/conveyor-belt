@@ -5,6 +5,10 @@ namespace Glhd\ConveyorBelt;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $id_column
+ * @property string $id_alias
+ */
 trait IteratesIdQuery
 {
 	use IteratesQuery;
@@ -15,16 +19,16 @@ trait IteratesIdQuery
 	 */
 	public function queryToEnumerable($query): Enumerable
 	{
-		return $query->lazyById($this->chunkCount(), $this->idColumnName(), $this->idAliasName());
+		return $query->lazyById($this->getChunkSize(), $this->getIdColumn(), $this->getIdAlias());
 	}
 	
-	protected function idColumnName(): string
+	protected function getIdColumn(): string
 	{
-		return 'id';
+		return $this->useCommandPropertyIfExists('id_column', 'id');
 	}
 	
-	protected function idAliasName(): string
+	protected function getIdAlias(): string
 	{
-		return Str::afterLast($this->idColumnName(), '.');
+		return $this->useCommandPropertyIfExists('id_alias', Str::afterLast($this->getIdColumn(), '.'));
 	}
 }

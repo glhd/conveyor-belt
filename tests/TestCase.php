@@ -3,6 +3,7 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Support\ConveyorBeltServiceProvider;
+use Glhd\ConveyorBelt\Tests\Commands\PeopleFromSpreadsheetCommand;
 use Glhd\ConveyorBelt\Tests\Commands\ShowUsersCommand;
 use Glhd\ConveyorBelt\Tests\Models\Company;
 use Glhd\ConveyorBelt\Tests\Models\User;
@@ -35,6 +36,7 @@ abstract class TestCase extends Orchestra
 	{
 		Application::starting(function(Application $app) {
 			$app->resolve(ShowUsersCommand::class);
+			$app->resolve(PeopleFromSpreadsheetCommand::class);
 		});
 	}
 	

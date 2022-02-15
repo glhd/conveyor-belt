@@ -2,51 +2,86 @@
 
 namespace Glhd\ConveyorBelt\Belts;
 
+use Box\Spout\Common\Entity\Row;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Reader\CSV\Reader;
+use Box\Spout\Reader\CSV\Reader as CsvReader;
+use Box\Spout\Reader\ODS\Reader as OdsReader;
 use Box\Spout\Reader\ReaderInterface;
+use Box\Spout\Reader\SheetInterface;
+use Box\Spout\Reader\XLSX\Reader as XlsxReader;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;
-use RuntimeException;
 
 /**
  * @property \Glhd\ConveyorBelt\IteratesSpreadsheet|\Symfony\Component\Console\Command\Command $command
  */
 class SpreadsheetBelt extends ConveyorBelt
 {
+	protected ?array $headings = null;
+	
 	protected function collect(): Enumerable
 	{
 		return new LazyCollection(function() {
-			$handle = fopen($filename = $this->command->csvFile(), 'rb');
+			$reader = $this->reader();
 			
-			if (false === $handle) {
-				throw new RuntimeException("Unable to read CSV file '{$filename}'");
-			}
+			$reader->open($this->command->getSpreadsheetFilename());
 			
-			$length = $this->command->csvReadLength();
-			$separator = $this->command->csvSeparator();
-			$enclosure = $this->command->csvEnclosure();
-			$escape = $this->command->csvEscape();
-			
-			if ($this->command->csvHasHeadings()) {
-				$headings = fgetcsv($handle, $length, $separator, $enclosure, $escape);
-				$column_count = count($headings);
-				
-				while ($row = fgetcsv($handle, $length, $separator, $enclosure, $escape)) {
-					yield array_combine($headings, array_pad($row, $column_count, null));
-				}
-			} else {
-				while ($row = fgetcsv($handle, $length, $separator, $enclosure, $escape)) {
-					yield $row;
+			foreach ($reader->getSheetIterator() as $sheet) {
+				$this->headings = null;
+				foreach ($sheet->getRowIterator() as $row) {
+					if ($result = $this->mapRow($row)) {
+						yield $result;
+					}
 				}
 			}
 			
-			fclose($handle);
+			$reader->close();
 		});
+	}
+	
+	protected function mapRow(Row $row)
+	{
+		if (null === $this->headings && $this->command->shouldUseHeadings()) {
+			$this->setHeadings($row);
+			return null;
+		}
+		
+		return $this->command->mapCells($row->getCells(), $this->headings);
+	}
+	
+	protected function setHeadings(Row $row): void
+	{
+		$this->headings = $this->command->mapHeadings($row->getCells());
 	}
 	
 	protected function reader(): ReaderInterface
 	{
-		return ReaderEntityFactory::createReaderFromFile($this->command->csvFile());
+		$reader = ReaderEntityFactory::createReaderFromFile($this->command->getSpreadsheetFilename());
+		
+		return $this->configureReader($reader);
+	}
+	
+	protected function configureReader(ReaderInterface $reader): ReaderInterface
+	{
+		if ($reader instanceof CsvReader) {
+			$reader->setShouldFormatDates($this->command->shouldFormatDates());
+			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
+			$reader->setFieldDelimiter($this->command->getFieldDelimiter());
+			$reader->setFieldEnclosure($this->command->getFieldEnclosure());
+			$reader->setEncoding($this->command->getSpreadsheetEncoding());
+		}
+		
+		if ($reader instanceof XlsxReader) {
+			$reader->setTempFolder($this->command->getExcelTempDirectory());
+			$reader->setShouldFormatDates($this->command->shouldFormatDates());
+			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
+		}
+		
+		if ($reader instanceof OdsReader) {
+			$reader->setShouldFormatDates($this->command->shouldFormatDates());
+			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
+		}
+		
+		return $reader;
 	}
 }
