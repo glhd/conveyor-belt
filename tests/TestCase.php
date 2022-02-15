@@ -3,7 +3,7 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Support\ConveyorBeltServiceProvider;
-use Glhd\ConveyorBelt\Tests\Commands\ShowUsersCommand;
+use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
@@ -20,6 +20,7 @@ abstract class TestCase extends Orchestra
 			$app->resolve(TestSpreadsheetCommand::class);
 			$app->resolve(TestJsonFileCommand::class);
 			$app->resolve(TestQueryCommand::class);
+			$app->resolve(TestIdQueryCommand::class);
 		});
 	}
 	
