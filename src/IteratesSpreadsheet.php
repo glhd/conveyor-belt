@@ -49,7 +49,7 @@ trait IteratesSpreadsheet
 		$result = [];
 		
 		foreach ($cells as $index => $cell) {
-			$value =  $cell->isDate()
+			$value = $cell->isDate()
 				? Date::instance($cell->getValue())
 				: $cell->getValue();
 			
@@ -80,7 +80,7 @@ trait IteratesSpreadsheet
 			$value = trim($value);
 			$heading = Str::{$format}($value);
 			
-			if (in_array($heading, $headings))  {
+			if (in_array($heading, $headings)) {
 				$heading = Str::{$format}("$value $index");
 			}
 			

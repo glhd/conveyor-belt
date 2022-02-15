@@ -10,6 +10,7 @@ class TestJsonFileCommand extends Command
 	use IteratesJson;
 	
 	public $collect_exceptions = true;
+
 	public $json_pointer = null;
 	
 	protected $signature = 'test:json-file {filename} {--throw} {--pointer=}';
