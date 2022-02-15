@@ -7,7 +7,7 @@ return [
 	|--------------------------------------------------------------------------
 	|
 	| By default, Conveyor Belt will throw an exception as soon as it's
-	| triggered unless you configure the `collectExceptions()` method on
+	| triggered unless you set the `$collect_exceptions` property to `true` on
 	| your Artisan command. You can change the default behavior here.
 	|
 	*/
