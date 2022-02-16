@@ -70,6 +70,52 @@ To use Conveyor Belt, use one of the conveyor belt traits in your Laravel comman
 - `\Glhd\ConveyorBelt\IteratesSpreadsheet` — use this to read CSV or Excel files
 - `\Glhd\ConveyorBelt\IteratesJson` — use this to read JSON files or JSON API data
 
+## Configuration
+
+Most commands can be configured by setting public properties on the command itself. For example, if you want
+to enable exception handling, you would add `public $collect_exceptions = true;` to your command. Each config
+option can also be managed by overriding a function (if you need more dynamic control over its value). See the
+source of each trait to find the appropriate function name.
+
+### Common for all commands
+
+- `$collect_exceptions` — set to `true` to have your command continue to run if an exception is triggered
+  (the exception will be printed at the end of command execution)
+- `$row_name` — set this to customize command output (e.g. if you're operating on `User` models you could
+  set this to `"user"`)
+- `$row_name_plural` — the plural of `$row_name` (usually not necessary, as we use `Str::plural` for you)
+
+### `IteratesQuery`
+
+- `$chunk_size` — the number of database records to load at one time 
+- `$use_transaction` — whether to run the whole command inside a database transaction (can cause locking
+  issues if your command runs for a long time)
+
+### `IteratesIdQuery`
+
+The `IteratesIdQuery` trait accepts all the options that `IteratesQuery` does, as well as:
+
+- `$id_column` — the name of your ID column (if it is not `"id"`)
+- `$id_alias` — the alias to your ID column in your query
+
+### `IteratesSpreadsheet`
+
+- `$use_headings` — whether to treat the first row of each sheet as headings
+- `$preserve_empty_rows` — whether empty rows should be included
+- `$format_dates` — whether date columns should be formatted (typically you don't need this because Conveyor Belt
+  automatically converts date cells to `Carbon` instances for you)
+- `$filename` — the file to load (only set if this is not dynamic in any way, which is unusual)
+- `$excel_temp_directory` — set if you need to customize where temp files are stored
+- `$field_delimiter` — change this if you need to import non-standard CSV files (e.g. tab-delimited)
+- `$field_enclosure` — change this if you need to import non-standard CSV files (that don't use the `"` character)
+- `$spreadsheet_encoding` — change this if you're dealing with non-UTF-8 data
+- `$heading_format` — Change this to any `Str::` function to change the format of your array keys (`"snake"` by default)
+
+### `IteratesJson`
+
+- `$filename` — the file to load (only set if this is not dynamic in any way, which is unusual)
+- `$json_pointer` — use this to iterate over nested JSON data ([see spec](https://datatracker.ietf.org/doc/html/rfc6901))
+
 ## Examples
 
 ### Database Example
