@@ -10,6 +10,7 @@ use Illuminate\Console\Concerns\InteractsWithIO;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Exception as PhpUnitException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -134,6 +135,8 @@ abstract class ConveyorBelt
 		
 		try {
 			$this->command->handleRow($item);
+		} catch (PhpUnitException $exception) {
+			throw $exception;
 		} catch (Throwable $throwable) {
 			$this->handleRowException($throwable, $item);
 		}
