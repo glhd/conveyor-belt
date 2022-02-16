@@ -21,7 +21,6 @@ trait ArtificiallyFails
 		}
 		
 		if ($this->iteration_count_for_exception_trigger > $times) {
-			dump('throwing '.$exception);
 			throw new $exception($message);
 		}
 	}

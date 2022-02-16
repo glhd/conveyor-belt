@@ -5,6 +5,7 @@ namespace Glhd\ConveyorBelt\Tests;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonEndpointCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
+use GuzzleHttp\Psr7\PumpStream;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -62,8 +63,17 @@ class IteratesJsonTest extends TestCase
 	{
 		$stub = file_get_contents(__DIR__.'/sources/botw.json');
 		
+		// This forces the JSON to be read in small chunks, which lets us test
+		// whether the JsonMachine parser is working as expected
+		$chunks = str_split($stub, random_int(50, 200));
+		$stream = new PumpStream(function() use (&$chunks) {
+			return count($chunks)
+				? array_shift($chunks)
+				: false;
+		});
+		
 		Http::fake([
-			'botw-compendium.herokuapp.com/*' => Http::response($stub, 200, ['content-type' => 'application/json']),
+			'botw-compendium.herokuapp.com/*' => Http::response($stream, 200, ['content-type' => 'application/json']),
 		]);
 		
 		$botw = json_decode($stub);
@@ -84,6 +94,7 @@ class IteratesJsonTest extends TestCase
 			->withStepMode($step, count($equipment))
 			->run();
 		
+		$this->assertEmpty($equipment);
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
