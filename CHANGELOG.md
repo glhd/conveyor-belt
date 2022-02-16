@@ -5,32 +5,34 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.2.0] - 2022-02-16
+
 ### Added
 
-- Added support for JSON files
-- Added support for CSV files
-- Added support for Excel spreadsheets
+-   Added support for JSON files
+-   Added support for CSV files
+-   Added support for Excel spreadsheets
 
 ### Changed
 
-- All configuration has been moved to command properties rather than functions (see README.md for more info)
-- Refactored most of the internals to support many more source types
-- Exceptions will always be shown even when `$collect_exceptions` is enabled. If `$collect_exceptions`
-  is enabled, Conveyor Belt will *also* show the exceptions at the end of execution
+-   All configuration has been moved to command properties rather than functions (see README.md for more info)
+-   Refactored most of the internals to support many more source types
+-   Exceptions will always be shown even when `$collect_exceptions` is enabled. If `$collect_exceptions`
+    is enabled, Conveyor Belt will _also_ show the exceptions at the end of execution
 
 ## [0.1.0] - 2022-01-31
 
 ### Added
 
-- Added config
-- Added translations
-- Added a `--pause-on-error` option
+-   Added config
+-   Added translations
+-   Added a `--pause-on-error` option
 
 ## [0.0.1] - 2022-01-28
 
 ### Added
 
-- Initial release
+-   Initial release
 
 # Keep a Changelog Syntax
 
@@ -41,6 +43,10 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.0.1...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.2.0...HEAD
+
+[0.2.0]: https://github.com/glhd/conveyor-belt/compare/0.1.0...0.2.0
+
 [0.1.0]: https://github.com/glhd/conveyor-belt/compare/0.0.1...0.1.0
+
 [0.0.1]: https://github.com/glhd/conveyor-belt/compare/0.0.1...0.0.1
