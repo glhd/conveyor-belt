@@ -49,7 +49,7 @@ class IteratesJsonTest extends TestCase
 	public function dataProvider()
 	{
 		return $this->getDataProvider(
-			['root json' => __DIR__.'/sources/people.json', 'nested json' =>  __DIR__.'/sources/people-nested.json'],
+			['root json' => __DIR__.'/sources/people.json', 'nested json' => __DIR__.'/sources/people-nested.json'],
 			['' => false, 'step mode' => true],
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
 		);

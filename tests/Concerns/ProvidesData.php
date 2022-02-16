@@ -2,8 +2,6 @@
 
 namespace Glhd\ConveyorBelt\Tests\Concerns;
 
-use Glhd\ConveyorBelt\Tests\PendingConveyorBeltCommand;
-
 trait ProvidesData
 {
 	protected function getDataProvider(array ...$data): array
@@ -22,7 +20,6 @@ trait ProvidesData
 			$next_results = [];
 			
 			foreach ($set as $label => $value) {
-				
 				if (is_numeric($label)) {
 					$label = $value;
 				}

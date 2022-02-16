@@ -53,7 +53,7 @@ class IteratesSpreadsheetTest extends TestCase
 	
 	protected function normalizeData($data)
 	{
-		if (!empty($data->quoted_at)) {
+		if (! empty($data->quoted_at)) {
 			if (! ($data->quoted_at instanceof Carbon)) {
 				$data->quoted_at = Date::parse($data->quoted_at);
 			}
