@@ -5,6 +5,10 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Added
+
+- Added better support for JSON APIs
+
 ## [0.2.0] - 2022-02-16
 
 ### Added

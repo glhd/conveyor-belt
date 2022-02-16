@@ -114,6 +114,7 @@ The `IteratesIdQuery` trait accepts all the options that `IteratesQuery` does, a
 ### `IteratesJson`
 
 - `$filename` — the file to load (only set if this is not dynamic in any way, which is unusual)
+- `$json_endpoint` — the JSON endpoint to query for data (use `getJsonEndpoint` to set this dynamically)
 - `$json_pointer` — use this to iterate over nested JSON data ([see spec](https://datatracker.ietf.org/doc/html/rfc6901))
 
 ## Examples
