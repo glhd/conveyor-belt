@@ -26,8 +26,8 @@ class IteratesSpreadsheetTest extends TestCase
 			$expected = array_shift($expectations);
 			$this->assertEquals($this->normalizeData($expected), $this->normalizeData($row));
 			
-			if ($exceptions && 'Bogdan Kharchenko' === $row->full_name) {
-				throw new RuntimeException('This should be caught.');
+			if ($exceptions) {
+				$this->triggerExceptionAfterTimes(1);
 			}
 		});
 		

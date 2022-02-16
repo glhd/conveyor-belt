@@ -124,6 +124,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/glhd/laravel-dumper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/halaxa/json-machine" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/box/spout" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-client" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

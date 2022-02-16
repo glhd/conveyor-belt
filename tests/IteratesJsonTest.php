@@ -2,8 +2,10 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestJsonEndpointCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonFileCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -11,7 +13,7 @@ class IteratesJsonTest extends TestCase
 {
 	use CallsTestCommands;
 	
-	/** @dataProvider dataProvider */
+	/** @dataProvider fileDataProvider */
 	public function test_it_reads_json_files(string $filename, bool $step, $exceptions): void
 	{
 		$pointer = Str::contains($filename, '-nested')
@@ -29,8 +31,8 @@ class IteratesJsonTest extends TestCase
 			$expected = array_shift($expectations);
 			$this->assertEquals($expected, $row);
 			
-			if ($exceptions && 'Bogdan Kharchenko' === $row->full_name) {
-				throw new RuntimeException('This should be caught.');
+			if ($exceptions) {
+				$this->triggerExceptionAfterTimes(1);
 			}
 		});
 		
@@ -46,12 +48,50 @@ class IteratesJsonTest extends TestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	public function dataProvider()
+	public function fileDataProvider()
 	{
 		return $this->getDataProvider(
 			['root json' => __DIR__.'/sources/people.json', 'nested json' => __DIR__.'/sources/people-nested.json'],
 			['' => false, 'step mode' => true],
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
+		);
+	}
+	
+	/** @dataProvider endpointDataProvider */
+	public function test_it_streams_json_api_data($step, $exceptions): void
+	{
+		$stub = file_get_contents(__DIR__.'/sources/botw.json');
+		
+		Http::fake([
+			'botw-compendium.herokuapp.com/*' => Http::response($stub, 200, ['content-type' => 'application/json']),
+		]);
+		
+		$botw = json_decode($stub);
+		$equipment = $botw->data->equipment;
+		
+		$this->registerHandleRowCallback(function($row) use ($exceptions, &$equipment) {
+			$expected = array_shift($equipment);
+			$this->assertEquals($expected, $row);
+			
+			if ($exceptions) {
+				$this->triggerExceptionAfterTimes(1);
+			}
+		});
+		
+		$this->callTestCommand(TestJsonEndpointCommand::class)
+			->expectingSuccessfulReturnCode(false === $exceptions)
+			->throwingExceptions('throw' === $exceptions)
+			->withStepMode($step, count($equipment))
+			->run();
+		
+		$this->assertHookMethodsWereCalledInExpectedOrder();
+	}
+	
+	public function endpointDataProvider()
+	{
+		return $this->getDataProvider(
+			['' => false, 'step mode' => true],
+			['no exceptions' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
 		);
 	}
 }

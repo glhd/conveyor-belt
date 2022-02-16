@@ -31,8 +31,8 @@ class IteratesIdQueryTest extends DatabaseTestCase
 				$this->assertInstanceOf(User::class, $row);
 			}
 			
-			if ($exceptions && 'Bogdan Kharchenko' === $row->name) {
-				throw new RuntimeException('This should be caught.');
+			if ($exceptions) {
+				$this->triggerExceptionAfterTimes(1);
 			}
 		});
 		

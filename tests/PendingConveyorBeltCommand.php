@@ -27,6 +27,8 @@ class PendingConveyorBeltCommand
 	
 	protected int $expected_exit_code = 0;
 	
+	protected int $step_times = 4;
+	
 	public function __construct(TestCase $test, Application $app, string $command, array $parameters = [])
 	{
 		$this->test = $test;
@@ -81,10 +83,11 @@ class PendingConveyorBeltCommand
 		return $this;
 	}
 	
-	public function withStepMode(bool $step): self
+	public function withStepMode(bool $step, int $times = 4): self
 	{
 		if ($step) {
 			$this->parameters['--step'] = true;
+			$this->step_times = $times;
 		}
 		
 		return $this;
@@ -96,9 +99,9 @@ class PendingConveyorBeltCommand
 			$command->expectsQuestion('Continue?', true);
 			
 			if (! $this->parameters['--throw']) {
-				$command->expectsQuestion('Continue?', true);
-				$command->expectsQuestion('Continue?', true);
-				$command->expectsQuestion('Continue?', true);
+				for ($i = $this->step_times; $i > 1; $i--) {
+					$command->expectsQuestion('Continue?', true);
+				}
 			}
 		}
 	}

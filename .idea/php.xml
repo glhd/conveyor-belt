@@ -127,6 +127,9 @@
       <path value="$PROJECT_DIR$/vendor/glhd/laravel-dumper" />
       <path value="$PROJECT_DIR$/vendor/halaxa/json-machine" />
       <path value="$PROJECT_DIR$/vendor/box/spout" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-client" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4">

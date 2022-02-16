@@ -20,7 +20,8 @@
     "ext-json": "*",
     "jdorn/sql-formatter": "^1.2",
     "halaxa/json-machine": "^1.0",
-    "box/spout": "^3.3"
+    "box/spout": "^3.3",
+    "guzzlehttp/guzzle": "^7.0"
   },
   "require-dev": {
     "orchestra/testbench": "^6.21|^7.0|dev-master",
