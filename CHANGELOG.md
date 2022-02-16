@@ -5,9 +5,22 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Added
+
+- Added support for JSON files
+- Added support for CSV files
+- Added support for Excel spreadsheets
+
+### Changed
+
+- All configuration has been moved to command properties rather than functions (see README.md for more info)
+- Refactored most of the internals to support many more source types
+- Exceptions will always be shown even when `$collect_exceptions` is enabled. If `$collect_exceptions`
+  is enabled, Conveyor Belt will *also* show the exceptions at the end of execution
+
 ## [0.1.0] - 2022-01-31
 
-## Added
+### Added
 
 - Added config
 - Added translations
@@ -15,7 +28,7 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [0.0.1] - 2022-01-28
 
-## Added
+### Added
 
 - Initial release
 

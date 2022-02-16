@@ -177,14 +177,11 @@ abstract class ConveyorBelt
 	
 	protected function printError(Throwable $exception): void
 	{
-		if ($this->output->isVerbose()) {
-			$this->progress->interrupt(fn() => $this->error($exception));
-			return;
-		}
+		$message = $this->output->isVerbose() || $this->option('pause-on-error')
+			? (string) $exception
+			: get_class($exception).': '.$exception->getMessage();
 		
-		if ($this->option('pause-on-error')) {
-			$this->progress->interrupt(fn() => $this->error(get_class($exception).': '.$exception->getMessage()));
-		}
+		$this->progress->interrupt(fn() => $this->error($message));
 	}
 	
 	protected function pauseOnErrorIfRequested(): void
