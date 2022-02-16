@@ -6,7 +6,6 @@ use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use RuntimeException;
 
 class IteratesIdQueryTest extends DatabaseTestCase
 {

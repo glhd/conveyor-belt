@@ -16,6 +16,6 @@ class TestJsonEndpointCommand extends TestCommand
 	
 	public function shouldCollectExceptions(): bool
 	{
-		return !$this->option('throw');
+		return ! $this->option('throw');
 	}
 }

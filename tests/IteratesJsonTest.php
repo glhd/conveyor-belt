@@ -8,7 +8,6 @@ use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use GuzzleHttp\Psr7\PumpStream;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 class IteratesJsonTest extends TestCase
 {

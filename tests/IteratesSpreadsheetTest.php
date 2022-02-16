@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Illuminate\Support\Facades\Date;
-use RuntimeException;
 
 class IteratesSpreadsheetTest extends TestCase
 {

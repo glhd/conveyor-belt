@@ -6,7 +6,6 @@ use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
-use RuntimeException;
 use SqlFormatter;
 
 class IteratesQueryTest extends DatabaseTestCase
