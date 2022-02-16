@@ -4,7 +4,6 @@ namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 class IteratesSpreadsheetTest extends TestCase
@@ -32,7 +31,8 @@ class IteratesSpreadsheetTest extends TestCase
 			}
 		});
 		
-		$this->callTestCommand(TestSpreadsheetCommand::class, ['filename' => $filename])
+		$this->callTestCommand(TestSpreadsheetCommand::class)
+			->withArgument('filename', $filename)
 			->withStepMode($step)
 			->expectingSuccessfulReturnCode(false === $exceptions)
 			->throwingExceptions('throw' === $exceptions)
@@ -44,27 +44,10 @@ class IteratesSpreadsheetTest extends TestCase
 	
 	public function dataProvider()
 	{
-		$filenames = [
-			__DIR__.'/sources/people.csv',
-			__DIR__.'/sources/people.xlsx',
-		];
-		
-		foreach ($filenames as $filename) {
-			foreach ([false, true] as $step) {
-				foreach ([false, 'throw', 'collect'] as $exceptions) {
-					$label = (implode('; ', array_filter([
-						Str::of($filename)->afterLast('.')->upper(),
-						$step
-							? 'step mode'
-							: null,
-						$exceptions
-							? "{$exceptions} exceptions"
-							: null,
-					])));
-					
-					yield $label => [$filename, $step, $exceptions];
-				}
-			}
-		}
+		return $this->getDataProvider(
+			['CSV' => __DIR__.'/sources/people.csv', 'Excel' => __DIR__.'/sources/people.xlsx'],
+			['' => false, 'step mode' => true],
+			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
+		);
 	}
 }

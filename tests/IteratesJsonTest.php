@@ -12,8 +12,12 @@ class IteratesJsonTest extends TestCase
 	use CallsTestCommands;
 	
 	/** @dataProvider dataProvider */
-	public function test_it_reads_json_files(string $filename, ?string $pointer, bool $step, $exceptions): void
+	public function test_it_reads_json_files(string $filename, bool $step, $exceptions): void
 	{
+		$pointer = Str::contains($filename, '-nested')
+			? '/results/people'
+			: null;
+		
 		$expectations = [
 			(object) ['full_name' => 'Chris Morrell', 'company' => 'Galahad, Inc.', 'quote' => '"I hate final classes."'],
 			(object) ['full_name' => 'Bogdan Kharchenko', 'company' => 'Galahad, Inc.', 'quote' => '"It works."'],
@@ -30,12 +34,9 @@ class IteratesJsonTest extends TestCase
 			}
 		});
 		
-		$parameters = [
-			'filename' => $filename,
-			'--pointer' => $pointer,
-		];
-		
-		$this->callTestCommand(TestJsonFileCommand::class, $parameters)
+		$this->callTestCommand(TestJsonFileCommand::class)
+			->withArgument('filename', $filename)
+			->withOption('pointer', $pointer)
 			->withStepMode($step)
 			->expectingSuccessfulReturnCode(false === $exceptions)
 			->throwingExceptions('throw' === $exceptions)
@@ -47,27 +48,10 @@ class IteratesJsonTest extends TestCase
 	
 	public function dataProvider()
 	{
-		$cases = [
-			(object) ['filename' => __DIR__.'/sources/people.json', 'pointer' => null],
-			(object) ['filename' => __DIR__.'/sources/people-nested.json', 'pointer' => '/results/people'],
-		];
-		
-		foreach ($cases as $case) {
-			foreach ([false, true] as $step) {
-				foreach ([false, 'throw', 'collect'] as $exceptions) {
-					$label = (implode('; ', array_filter([
-						Str::of($case->filename)->afterLast('/')->beforeLast('.'),
-						$step
-							? 'step mode'
-							: null,
-						$exceptions
-							? "{$exceptions} exceptions"
-							: null,
-					])));
-					
-					yield $label => [$case->filename, $case->pointer, $step, $exceptions];
-				}
-			}
-		}
+		return $this->getDataProvider(
+			['root json' => __DIR__.'/sources/people.json', 'nested json' =>  __DIR__.'/sources/people-nested.json'],
+			['' => false, 'step mode' => true],
+			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
+		);
 	}
 }

@@ -48,6 +48,20 @@ class PendingConveyorBeltCommand
 		return $this->pending;
 	}
 	
+	public function withArgument(string $key, $value = true): self
+	{
+		$this->parameters[$key] = $value;
+		
+		return $this;
+	}
+	
+	public function withOption(string $key, $value = true): self
+	{
+		$this->parameters["--{$key}"] = $value;
+		
+		return $this;
+	}
+	
 	public function throwingExceptions(bool $throw): self
 	{
 		if ($throw) {

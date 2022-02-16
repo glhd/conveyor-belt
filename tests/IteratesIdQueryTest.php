@@ -36,12 +36,9 @@ class IteratesIdQueryTest extends DatabaseTestCase
 			}
 		});
 		
-		$parameters = [
-			'case' => $case,
-			'--transaction' => $transaction,
-		];
-		
-		$this->callTestCommand(TestIdQueryCommand::class, $parameters)
+		$this->callTestCommand(TestIdQueryCommand::class)
+			->withArgument('case', $case)
+			->withOption('transaction', $transaction)
 			->withStepMode($step)
 			->expectingSuccessfulReturnCode(false === $exceptions)
 			->throwingExceptions('throw' === $exceptions)
@@ -57,32 +54,11 @@ class IteratesIdQueryTest extends DatabaseTestCase
 	
 	public function dataProvider()
 	{
-		$cases = [
-			'eloquent',
-			'base',
-		];
-		
-		foreach ($cases as $case) {
-			foreach ([false, true] as $step) {
-				foreach ([false, 'throw', 'collect'] as $exceptions) {
-					foreach ([false, true] as $transaction) {
-						$label = (implode('; ', array_filter([
-							$case,
-							$step
-								? 'step mode'
-								: null,
-							$exceptions
-								? "{$exceptions} exceptions"
-								: null,
-							$transaction
-								? 'in transaction'
-								: null,
-						])));
-						
-						yield $label => [$case, $step, $exceptions, $transaction];
-					}
-				}
-			}
-		}
+		return $this->getDataProvider(
+			['eloquent', 'base'],
+			['' => false, 'step mode' => true],
+			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
+			['' => false, 'in transaction' => true],
+		);
 	}
 }
