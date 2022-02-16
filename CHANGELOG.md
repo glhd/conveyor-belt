@@ -8,6 +8,7 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 ### Added
 
 - Added better support for JSON APIs
+- Added support for any `Enumerable` object (like `Collection` or `LazyCollection`)
 
 ## [0.2.0] - 2022-02-16
 

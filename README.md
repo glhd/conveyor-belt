@@ -70,6 +70,10 @@ To use Conveyor Belt, use one of the conveyor belt traits in your Laravel comman
 - `\Glhd\ConveyorBelt\IteratesSpreadsheet` — use this to read CSV or Excel files
 - `\Glhd\ConveyorBelt\IteratesJson` — use this to read JSON files or JSON API data
 
+### Other
+
+- `\Glhd\ConveyorBelt\IteratesEnumerable` — use this to work with any generic data source
+
 ## Configuration
 
 Most commands can be configured by setting public properties on the command itself. For example, if you want
