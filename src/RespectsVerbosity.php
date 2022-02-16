@@ -1,6 +1,6 @@
 <?php
 
-namespace Glhd\ConveyorBelt\Concerns;
+namespace Glhd\ConveyorBelt;
 
 use Closure;
 use Symfony\Component\Console\Output\OutputInterface;

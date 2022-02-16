@@ -26,7 +26,7 @@ class ProgressBar
 		return null !== $this->bar;
 	}
 	
-	public function start(int $count, string $row_singular = 'record', string $row_plural = 'records'): self
+	public function start(?int $count, string $row_singular = 'record', string $row_plural = 'records'): self
 	{
 		$this->newLine();
 		
@@ -43,7 +43,7 @@ class ProgressBar
 		}
 		
 		$this->bar = $this->output->createProgressBar();
-		$this->bar->setFormat($this->getFormat());
+		$this->bar->setFormat($this->getFormat(null !== $count));
 		$this->bar->setMessage('');
 		$this->bar->start($count);
 		
@@ -132,12 +132,16 @@ class ProgressBar
 		return $result;
 	}
 	
-	protected function getFormat(): string
+	protected function getFormat(bool $has_count): string
 	{
+		$format = $has_count
+			? 'count'
+			: 'base';
+		
 		if ($this->input->getOption('show-memory-usage')) {
-			return config('conveyor-belt.progress_format_with_memory', '%bar% %current%/%max% (%memory%, ~%remaining%) %message%');
+			$format .= '_with_memory';
 		}
 		
-		return config('conveyor-belt.progress_format', '%bar% %current%/%max% (~%remaining%) %message%');
+		return config("conveyor-belt.progress_formats.{$format}", '%bar% %current% %message%');
 	}
 }

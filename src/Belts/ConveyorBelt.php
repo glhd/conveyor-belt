@@ -1,18 +1,16 @@
 <?php
 
-namespace Glhd\ConveyorBelt\Support;
+namespace Glhd\ConveyorBelt\Belts;
 
-use Closure;
+use Countable;
 use Glhd\ConveyorBelt\Exceptions\AbortConveyorBeltException;
+use Glhd\ConveyorBelt\Support\CollectedException;
+use Glhd\ConveyorBelt\Support\ProgressBar;
 use Illuminate\Console\Concerns\InteractsWithIO;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Query\Builder as BaseBuilder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Str;
-use SqlFormatter;
+use PHPUnit\Framework\Exception as PhpUnitException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Throwable;
 
-class ConveyorBelt
+abstract class ConveyorBelt
 {
 	use InteractsWithIO {
 		table as defaultTable;
@@ -29,14 +27,13 @@ class ConveyorBelt
 	
 	public ProgressBar $progress;
 	
-	/** @var \Glhd\ConveyorBelt\IteratesQuery|\Illuminate\Console\Command */
+	/** @var \Glhd\ConveyorBelt\IteratesData|\Illuminate\Console\Command */
 	protected $command;
-	
-	/** @var BaseBuilder|EloquentBuilder|Relation */
-	protected $query = null;
 	
 	/** @var \Glhd\ConveyorBelt\Support\CollectedException[] */
 	protected array $exceptions = [];
+	
+	abstract protected function collect(): Enumerable;
 	
 	public function __construct($command)
 	{
@@ -53,14 +50,15 @@ class ConveyorBelt
 		$this->progress = new ProgressBar($input, $output);
 	}
 	
-	public function run(): int
+	public function handle(): int
 	{
 		$this->newLine();
 		
 		try {
 			$this->prepare();
-			$this->printIntro();
+			$this->header();
 			$this->start();
+			$this->run();
 			$this->finish();
 			
 			return Command::SUCCESS;
@@ -78,40 +76,50 @@ class ConveyorBelt
 	protected function prepare(): void
 	{
 		$this->verifyCommandSetup();
-		$this->prepareForQueryLogging();
-		$this->setVerbosityBasedOnStepMode();
+		$this->setVerbosityBasedOnOptions();
 		
-		// The "before first row" hook should run before the --dump-sql flag
-		// is checked, just in case the command needs to set up any data that
-		// will be used to build the query (i.e. other inputs or environmental data)
-		$this->command->beforeFirstRow();
-		
-		// Once everything else is prepared, we'll check for the --dump-sql
-		// flag and if it's set, print the query and exit
-		$this->dumpSqlAndAbortIfRequested();
+		if (method_exists($this->command, 'beforeFirstRow')) {
+			$this->command->beforeFirstRow();
+		}
+	}
+	
+	protected function header(): void
+	{
+		$this->info(trans('conveyor-belt::messages.querying', ['records' => $this->command->getRowNamePlural()]));
 	}
 	
 	protected function start(): void
 	{
-		if (! $count = $this->query()->count()) {
-			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->rowNamePlural()]));
+		$count = null;
+		
+		if ($this instanceof Countable && ! $count = $this->count()) {
+			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->getRowNamePlural()]));
 			return;
 		}
 		
-		$this->progress->start($count, $this->command->rowName(), $this->command->rowNamePlural());
+		$this->progress->start($count, $this->command->getRowName(), $this->command->getRowNamePlural());
+	}
+	
+	protected function run(): void
+	{
+		// Implementations may need to wrap the execution in another
+		// process (like a transaction), so we'll add a layer here for extension
 		
-		if ($this->command->useTransaction()) {
-			DB::transaction(fn() => $this->executeQuery());
-		} else {
-			$this->executeQuery();
-		}
-		
-		$this->progress->finish();
+		$this->execute();
+	}
+	
+	protected function execute(): void
+	{
+		$this->collect()->each(fn($item) => $this->handleRow($item));
 	}
 	
 	protected function finish(): void
 	{
-		$this->command->afterLastRow();
+		$this->progress->finish();
+		
+		if (method_exists($this->command, 'afterLastRow')) {
+			$this->command->afterLastRow();
+		}
 		
 		$this->showCollectedExceptions();
 	}
@@ -121,44 +129,29 @@ class ConveyorBelt
 		throw new AbortConveyorBeltException($message, $code);
 	}
 	
-	protected function executeQuery(): void
+	protected function handleRow($item): bool
 	{
-		$this->command->beforeFirstQuery();
+		$original = $this->getOriginalForDiff($item);
 		
-		$this->command->iterateOverQuery($this->query(), $this->getChunkHandler());
-	}
-	
-	protected function getChunkHandler(): Closure
-	{
-		return function($items) {
-			$this->command->prepareChunk($items);
-			
-			foreach ($items as $item) {
-				if (false === $this->presentRow($item)) {
-					return false;
-				}
-			}
-			
-			return true;
-		};
-	}
-	
-	protected function presentRow($item): bool
-	{
 		try {
-			$original = $this->getOriginalForDiff($item);
 			$this->command->handleRow($item);
+		} catch (PhpUnitException $exception) {
+			throw $exception;
 		} catch (Throwable $throwable) {
 			$this->handleRowException($throwable, $item);
 		}
 		
 		$this->progress->advance();
 		
-		$this->logSql();
-		$this->logDiff($item, $original);
-		$this->pauseIfStepping();
+		$this->afterRow($item, $original);
 		
 		return true;
+	}
+	
+	protected function afterRow($item, array $original): void
+	{
+		$this->logDiff($item, $original);
+		$this->pauseIfStepping();
 	}
 	
 	protected function handleRowException(Throwable $exception, $item): void
@@ -171,14 +164,14 @@ class ConveyorBelt
 		$this->printError($exception);
 		$this->pauseOnErrorIfRequested();
 		
-		if ($this->command->collectExceptions()) {
+		if ($this->command->shouldCollectExceptions()) {
 			$this->exceptions[] = new CollectedException($exception, $item);
 		}
 	}
 	
 	protected function shouldThrowRowException(): bool
 	{
-		return ! $this->command->collectExceptions()
+		return ! $this->command->shouldCollectExceptions()
 			&& ! $this->option('pause-on-error');
 	}
 	
@@ -210,26 +203,6 @@ class ConveyorBelt
 		$this->progress->resume();
 	}
 	
-	protected function logSql(): void
-	{
-		if (! $this->option('log-sql')) {
-			return;
-		}
-		
-		$table = collect(DB::getQueryLog())
-			->map(fn($log) => [$this->getFormattedQuery($log['query'], $log['bindings']), $log['time']]);
-		
-		if ($table->isEmpty()) {
-			return;
-		}
-		
-		$this->newLine();
-		$this->line(trans_choice('conveyor-belt::messages.queries_executed', $table->count()));
-		$this->table([trans('conveyor-belt::messages.query_heading'), trans('conveyor-belt::messages.time_heading')], $table);
-		
-		DB::flushQueryLog();
-	}
-	
 	protected function getOriginalForDiff($item): array
 	{
 		if (! $item instanceof Model || ! $this->option('diff')) {
@@ -259,7 +232,7 @@ class ConveyorBelt
 		
 		$this->newLine();
 		
-		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->rowName()]));
+		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->getRowName()]));
 		$this->table([trans('conveyor-belt::messages.before_heading'), trans('conveyor-belt::messages.after_heading')], $table);
 		
 		$this->progress->resume();
@@ -279,58 +252,11 @@ class ConveyorBelt
 		}
 	}
 	
-	protected function prepareForQueryLogging(): void
-	{
-		if ($this->option('log-sql')) {
-			$this->input->setOption('step', true);
-			DB::enableQueryLog();
-		}
-	}
-	
-	protected function setVerbosityBasedOnStepMode(): void
+	protected function setVerbosityBasedOnOptions(): void
 	{
 		if ($this->option('step')) {
 			$this->output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
 		}
-	}
-	
-	protected function dumpSqlAndAbortIfRequested(): void
-	{
-		if (! $this->option('dump-sql')) {
-			return;
-		}
-		
-		$query = $this->query();
-		$this->printFormattedQuery($query->toSql(), $query->getBindings());
-		
-		$this->abort();
-	}
-	
-	protected function printFormattedQuery(string $sql, array $bindings): void
-	{
-		$this->newLine();
-		
-		$this->line($this->getFormattedQuery($sql, $bindings));
-	}
-	
-	protected function getFormattedQuery(string $sql, array $bindings): string
-	{
-		$bindings = Arr::flatten($bindings);
-		
-		$sql = preg_replace_callback('/\?/', static function() use (&$bindings) {
-			return DB::getPdo()->quote(array_shift($bindings));
-		}, $sql);
-		
-		return SqlFormatter::format($sql);
-	}
-	
-	protected function printIntro(): void
-	{
-		$message = $this->command->useTransaction()
-			? trans('conveyor-belt::messages.querying_with_transaction', ['records' => $this->command->rowNamePlural()])
-			: trans('conveyor-belt::messages.querying_without_transaction', ['records' => $this->command->rowNamePlural()]);
-		
-		$this->info($message);
 	}
 	
 	protected function showCollectedExceptions(): void
@@ -344,7 +270,7 @@ class ConveyorBelt
 		$this->error(trans_choice('conveyor-belt::messages.exceptions_triggered', $count));
 		
 		$headers = [
-			Str::title($this->command->rowName()),
+			Str::title($this->command->getRowName()),
 			trans('conveyor-belt::messages.exception_heading'),
 			trans('conveyor-belt::messages.message_heading'),
 		];
@@ -364,42 +290,9 @@ class ConveyorBelt
 	
 	protected function addConveyorBeltOptions(InputDefinition $definition): void
 	{
-		$definition->addOption(new InputOption('dump-sql', null, null, 'Dump the SQL of the query this command will execute'));
-		$definition->addOption(new InputOption('log-sql', null, null, 'Log all SQL queries executed and print them'));
-		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->rowName()} one-by-one"));
+		$definition->addOption(new InputOption('step', null, null, "Step through each {$this->command->getRowName()} one-by-one"));
 		$definition->addOption(new InputOption('diff', null, null, 'See a diff of any changes made to your models'));
 		$definition->addOption(new InputOption('show-memory-usage', null, null, 'Include the command’s memory usage in the progress bar'));
 		$definition->addOption(new InputOption('pause-on-error', null, null, 'Pause if an exception is thrown'));
-	}
-	
-	/**
-	 * @return BaseBuilder|EloquentBuilder|Relation
-	 */
-	protected function query()
-	{
-		return $this->query ??= $this->fetchQueryFromCommand();
-	}
-	
-	protected function fetchQueryFromCommand()
-	{
-		if (! method_exists($this->command, 'query')) {
-			$this->abort('You must implement '.class_basename($this->command).'::query()', Command::INVALID);
-		}
-		
-		$query = $this->command->query();
-		
-		$expected = [
-			BaseBuilder::class,
-			EloquentBuilder::class,
-			Relation::class,
-		];
-		
-		foreach ($expected as $name) {
-			if ($query instanceof $name) {
-				return $query;
-			}
-		}
-		
-		$this->abort(class_basename($this->command).'::query() must return a query builder', Command::INVALID);
 	}
 }

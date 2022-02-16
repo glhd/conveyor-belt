@@ -2,13 +2,14 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
+use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use RuntimeException;
+use SqlFormatter;
 
-class IteratesIdQueryTest extends DatabaseTestCase
+class IteratesQueryTest extends DatabaseTestCase
 {
 	use TestsDatabaseTransactions;
 	use CallsTestCommands;
@@ -17,10 +18,10 @@ class IteratesIdQueryTest extends DatabaseTestCase
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
 	{
 		$expectations = [
-			'Chris Morrell',
 			'Bogdan Kharchenko',
-			'Taylor Otwell',
+			'Chris Morrell',
 			'Mohamed Said',
+			'Taylor Otwell',
 		];
 		
 		$this->registerHandleRowCallback(function($row) use (&$expectations, $case, $exceptions) {
@@ -31,12 +32,12 @@ class IteratesIdQueryTest extends DatabaseTestCase
 				$this->assertInstanceOf(User::class, $row);
 			}
 			
-			if ($exceptions && 'Bogdan Kharchenko' === $row->name) {
+			if ($exceptions && 'Chris Morrell' === $row->name) {
 				throw new RuntimeException('This should be caught.');
 			}
 		});
 		
-		$this->callTestCommand(TestIdQueryCommand::class)
+		$this->callTestCommand(TestQueryCommand::class)
 			->withArgument('case', $case)
 			->withOption('transaction', $transaction)
 			->withStepMode($step)
@@ -60,5 +61,14 @@ class IteratesIdQueryTest extends DatabaseTestCase
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
 			['' => false, 'in transaction' => true],
 		);
+	}
+	
+	public function test_dump_sql(): void
+	{
+		$formatted = SqlFormatter::format('select * from "users" order by "name" asc');
+		
+		$this->artisan(TestQueryCommand::class, ['case' => 'eloquent', '--dump-sql' => true])
+			->expectsOutput($formatted)
+			->assertFailed();
 	}
 }

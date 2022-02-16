@@ -7,7 +7,7 @@ return [
 	|--------------------------------------------------------------------------
 	|
 	| By default, Conveyor Belt will throw an exception as soon as it's
-	| triggered unless you configure the `collectExceptions()` method on
+	| triggered unless you set the `$collect_exceptions` property to `true` on
 	| your Artisan command. You can change the default behavior here.
 	|
 	*/
@@ -38,6 +38,10 @@ return [
 	|
 	*/
 	
-	'progress_format' => '%bar% %current%/%max% (~%remaining%) %message%',
-	'progress_format_with_memory' => '%bar% %current%/%max% (%memory%, ~%remaining%) %message%',
+	'progress_formats' => [
+		'base' => '%bar% %current% %message%',
+		'base_with_memory' => '%bar% %current% (%memory%) %message%',
+		'count' => '%bar% %current%/%max% (~%remaining%) %message%',
+		'count_with_memory' => '%bar% %current%/%max% (%memory%, ~%remaining%) %message%',
+	],
 ];

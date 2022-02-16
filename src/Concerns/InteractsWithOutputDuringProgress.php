@@ -97,6 +97,6 @@ trait InteractsWithOutputDuringProgress
 			return;
 		}
 		
-		return parent::newLine($count);
+		parent::newLine($count);
 	}
 }

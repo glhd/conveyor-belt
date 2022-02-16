@@ -122,6 +122,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/jdorn/sql-formatter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/glhd/laravel-dumper" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/halaxa/json-machine" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/box/spout" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

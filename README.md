@@ -58,17 +58,30 @@ Conveyor Belt provides all the underlying mechanics necessary to write artisan c
 
 ## Usage
 
-To use Conveyor Belt, use one of two traits in your Laravel command:
+To use Conveyor Belt, use one of the conveyor belt traits in your Laravel command:
+
+### Databases
 
 - `\Glhd\ConveyorBelt\IteratesIdQuery` — use this if your underlying query can be ordered by `id` (improves performance)
 - `\Glhd\ConveyorBelt\IteratesQuery` — use this if your query **is not ordered by `id`**
 
-### Basic Example
+### Files
+
+- `\Glhd\ConveyorBelt\IteratesSpreadsheet` — use this to read CSV or Excel files
+- `\Glhd\ConveyorBelt\IteratesJson` — use this to read JSON files or JSON API data
+
+## Examples
+
+### Database Example
 
 ```php
-class ProcessUnverifiedUsersCommand extends Command
+class ProcessUnverifiedUsers extends Command
 {
   use \Glhd\ConveyorBelt\IteratesIdQuery;
+  
+  // By setting $collect_exceptions to true, we tell Conveyor Belt to catch
+  // and log exceptions for display, rather than aborting execution
+  public $collect_exceptions = true;
   
   // First, set up the query for the data that your command will operate on.
   // In this example, we're querying for all users that haven't verified their emails.
@@ -109,12 +122,34 @@ class ProcessUnverifiedUsersCommand extends Command
       PruneUnverifiedUserJob::dispatch($user);
     }
   }
+}
+```
+
+### File Example
+
+```php
+class ProcessSignUpSheet extends Command
+{
+  use \Glhd\ConveyorBelt\IteratesSpreadsheet;
   
-  // By setting collectExceptions() to true, we tell Conveyor Belt to catch
-  // and log exceptions for display at the end of the operation
-  public function collectExceptions(): bool
+  // Conveyor Belt will automatically pick up a "filename" argument. If one
+  // is missing you can set a $filename property or implement the getSpreadsheetFilename method
+  protected $signature = 'process:sign-up-sheet {filename}';
+  
+  public function handleRow($item)
   {
-    return true;
+    // $item is an object keyed by the spreadsheet headings in snake_case,
+    // so for example, the following CSV:
+    //
+    // Full Name, Sign Up Date, Email
+    // Chris Morrell, 2022-01-02, chris@mailinator.com
+    //
+    // Will result in a full_name, sign_up_date, and email property
+    // on the $item object. You can change from snake case to any other
+    // string helper format by setting $heading_format
   }
 }
 ```
+
+The `IteratesJson` trait works exactly the same as the `IteratesSpreadsheet` trait, just
+with different configuration options.
