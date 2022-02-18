@@ -5,9 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.3.1] - 2022-02-18
+
 ### Fixed
 
-- Fixed an issue where the progress bar would reappear after new output
+-   Fixed an issue where the progress bar would reappear after new output
 
 ## [0.3.0] - 2022-02-16
 
@@ -54,7 +56,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.1...HEAD
+
+[0.3.1]: https://github.com/glhd/conveyor-belt/compare/0.3.0...0.3.1
 
 [0.3.0]: https://github.com/glhd/conveyor-belt/compare/0.2.0...0.3.0
 
