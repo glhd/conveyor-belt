@@ -5,6 +5,10 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed an issue where the progress bar would reappear after new output
+
 ## [0.3.0] - 2022-02-16
 
 ### Added
