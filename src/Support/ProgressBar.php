@@ -68,6 +68,7 @@ class ProgressBar
 		if ($this->bar) {
 			$this->bar->display();
 			$this->bar->finish();
+			$this->bar = null;
 		}
 		
 		$this->newLine();
