@@ -88,7 +88,7 @@ trait InteractsWithOutputDuringProgress
 	
 	public function alert($string, $verbosity = null)
 	{
-		return $this->withoutProgress(fn() => parent::alert($string, $verbosity = null));
+		return $this->withoutProgress(fn() => parent::alert($string, $verbosity));
 	}
 	
 	public function newLine($count = 1)
