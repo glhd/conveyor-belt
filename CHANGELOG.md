@@ -5,6 +5,10 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed signature compatibility issue introduced in Laravel 9.36.0
+
 ## [0.3.1] - 2022-02-18
 
 ### Fixed
