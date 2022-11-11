@@ -5,9 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.3.2] - 2022-11-11
+
 ### Fixed
 
-- Fixed signature compatibility issue introduced in Laravel 9.36.0
+-   Fixed signature compatibility issue introduced in Laravel 9.36.0
 
 ## [0.3.1] - 2022-02-18
 
@@ -60,7 +62,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.1...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.2...HEAD
+
+[0.3.2]: https://github.com/glhd/conveyor-belt/compare/0.3.1...0.3.2
 
 [0.3.1]: https://github.com/glhd/conveyor-belt/compare/0.3.0...0.3.1
 
