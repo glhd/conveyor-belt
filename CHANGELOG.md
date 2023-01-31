@@ -5,10 +5,12 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.3.3] - 2023-01-31
+
 ### Fixed
 
-- Fixed issue where query builder was getting re-used during tests
-- Improved docblock comments for IDE users
+-   Fixed issue where query builder was getting re-used during tests
+-   Improved docblock comments for IDE users
 
 ## [0.3.2] - 2022-11-11
 
@@ -67,7 +69,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.2...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.3...HEAD
+
+[0.3.3]: https://github.com/glhd/conveyor-belt/compare/0.3.2...0.3.3
 
 [0.3.2]: https://github.com/glhd/conveyor-belt/compare/0.3.1...0.3.2
 
