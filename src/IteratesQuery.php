@@ -10,7 +10,7 @@ use Illuminate\Support\Enumerable;
  * @property QueryBelt $conveyor_belt
  * @property int $chunk_size
  * @property bool $use_transaction
- * @method \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Relations\Relation query()
+ * @method query()
  */
 trait IteratesQuery
 {

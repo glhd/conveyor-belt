@@ -11,7 +11,7 @@ use Symfony\Component\Console\Command\Command;
 /**
  * @method beforeFirstRow()
  * @method afterLastRow()
- * @method handleRow(\Illuminate\Database\Eloquent\Model|mixed $item)
+ * @method handleRow($row)
  * @property bool $collect_exceptions
  * @property string $row_name
  * @property string $row_name_plural

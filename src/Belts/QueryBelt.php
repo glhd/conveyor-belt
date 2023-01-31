@@ -29,6 +29,10 @@ class QueryBelt extends ConveyorBelt implements Countable
 	
 	protected function prepare(): void
 	{
+		// Because commands are instantiated only once, we need to reset this
+		// so that they same query isn't re-used in tests
+		$this->query = null;
+		
 		// We need to prepare for query logging first, because if this flag is
 		// turned on, it will implicitly turn on the --step option as well
 		$this->prepareForQueryLogging();
