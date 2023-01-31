@@ -5,6 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue where query builder was getting re-used during tests
+- Improved docblock comments for IDE users
+
 ## [0.3.2] - 2022-11-11
 
 ### Fixed
