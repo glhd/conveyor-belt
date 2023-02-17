@@ -5,9 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [1.0.0] - 2023-02-17
+
 ### Added
 
-- Added Laravel 10 support
+-   Added Laravel 10 support
 
 ## [0.3.3] - 2023-01-31
 
@@ -73,7 +75,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/0.3.3...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/1.0.0...HEAD
+
+[1.0.0]: https://github.com/glhd/conveyor-belt/compare/0.3.3...1.0.0
 
 [0.3.3]: https://github.com/glhd/conveyor-belt/compare/0.3.2...0.3.3
 
