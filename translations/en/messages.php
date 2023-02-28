@@ -18,6 +18,7 @@ return [
 	'record' => 'record',
 	'query_heading' => 'Query',
 	'time_heading' => 'Time',
+	'column_heading' => 'Column',
 	'before_heading' => 'Before',
 	'after_heading' => 'After',
 	'exception_heading' => 'Exception',
