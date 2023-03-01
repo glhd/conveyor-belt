@@ -230,7 +230,7 @@ abstract class ConveyorBelt
 		$this->newLine();
 		
 		$this->line(trans('conveyor-belt::messages.changes_to_record', ['record' => $this->command->getRowName()]));
-		$this->table([trans('conveyor-belt::messages.before_heading'), trans('conveyor-belt::messages.after_heading')], $table);
+		$this->table([trans('conveyor-belt::messages.column_heading'), trans('conveyor-belt::messages.before_heading'), trans('conveyor-belt::messages.after_heading')], $table);
 		
 		$this->progress->resume();
 	}
