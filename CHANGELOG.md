@@ -5,6 +5,14 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Added
+
+- Added support for `filterRow()` and `rejectRow()` methods
+
+### Changed
+
+- Moved from `box\sprout` to `opensprout\opensprout` and upgraded to version 4
+
 ## [1.0.0] - 2023-02-17
 
 ### Added
