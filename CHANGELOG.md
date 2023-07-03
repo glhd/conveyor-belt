@@ -11,6 +11,7 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ### Changed
 
+- Requires PHP 8.0 or higher
 - Moved from `box\sprout` to `opensprout\opensprout` and upgraded to version 4
 
 ## [1.0.0] - 2023-02-17
