@@ -5,13 +5,15 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [2.0.0] - 2023-07-03
+
 ### Added
 
-- Added support for `filterRow()` and `rejectRow()` methods
+-   Added support for `filterRow()` and `rejectRow()` methods
 
 ### Changed
 
-- Moved from `box\sprout` to `opensprout\opensprout` and upgraded to version 4
+-   Moved from `box\sprout` to `opensprout\opensprout` and upgraded to version 4
 
 ## [1.0.0] - 2023-02-17
 
@@ -83,7 +85,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/2.0.0...HEAD
+
+[2.0.0]: https://github.com/glhd/conveyor-belt/compare/1.0.0...2.0.0
 
 [1.0.0]: https://github.com/glhd/conveyor-belt/compare/0.3.3...1.0.0
 
