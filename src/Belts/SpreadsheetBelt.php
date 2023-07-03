@@ -3,10 +3,12 @@
 namespace Glhd\ConveyorBelt\Belts;
 
 use OpenSpout\Common\Entity\Row;
-use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\CSV\Options as CsvOptions;
 use OpenSpout\Reader\CSV\Reader as CsvReader;
+use OpenSpout\Reader\ODS\Options as OdsOptions;
 use OpenSpout\Reader\ODS\Reader as OdsReader;
 use OpenSpout\Reader\ReaderInterface;
+use OpenSpout\Reader\XLSX\Options as XlsxOptions;
 use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;
@@ -55,32 +57,45 @@ class SpreadsheetBelt extends ConveyorBelt
 	
 	protected function reader(): ReaderInterface
 	{
-		$reader = ReaderEntityFactory::createReaderFromFile($this->command->getSpreadsheetFilename());
+		$path = $this->command->getSpreadsheetFilename();
 		
-		return $this->configureReader($reader);
+		$extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+		
+		return match ($extension) {
+			'csv' => $this->createCsvReader(),
+			'xlsx' => $this->createXlsxReader(),
+			'ods' => $this->createOdsReader(),
+			default => $this->abort("Unable to determine spreadsheet type for '{$path}'"),
+		};
 	}
 	
-	protected function configureReader(ReaderInterface $reader): ReaderInterface
+	protected function createCsvReader(): CsvReader
 	{
-		if ($reader instanceof CsvReader) {
-			$reader->setShouldFormatDates($this->command->shouldFormatDates());
-			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
-			$reader->setFieldDelimiter($this->command->getFieldDelimiter());
-			$reader->setFieldEnclosure($this->command->getFieldEnclosure());
-			$reader->setEncoding($this->command->getSpreadsheetEncoding());
-		}
+		$options = new CsvOptions();
+		$options->ENCODING = $this->command->getSpreadsheetEncoding();
+		$options->FIELD_DELIMITER = $this->command->getFieldDelimiter();
+		$options->FIELD_ENCLOSURE = $this->command->getFieldEnclosure();
+		$options->SHOULD_PRESERVE_EMPTY_ROWS = $this->command->shouldPreserveEmptyRows();
 		
-		if ($reader instanceof XlsxReader) {
-			$reader->setTempFolder($this->command->getExcelTempDirectory());
-			$reader->setShouldFormatDates($this->command->shouldFormatDates());
-			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
-		}
+		return new CsvReader($options);
+	}
+	
+	protected function createXlsxReader(): XlsxReader
+	{
+		$options = new XlsxOptions();
+		$options->SHOULD_PRESERVE_EMPTY_ROWS = $this->command->shouldPreserveEmptyRows();
+		$options->SHOULD_FORMAT_DATES = $this->command->shouldFormatDates();
+		$options->setTempFolder($this->command->getExcelTempDirectory());
 		
-		if ($reader instanceof OdsReader) {
-			$reader->setShouldFormatDates($this->command->shouldFormatDates());
-			$reader->setShouldPreserveEmptyRows($this->command->shouldPreserveEmptyRows());
-		}
+		return new XlsxReader($options);
+	}
+	
+	protected function createOdsReader(): OdsReader
+	{
+		$options = new OdsOptions();
+		$options->SHOULD_FORMAT_DATES = $this->command->shouldFormatDates();
+		$options->SHOULD_PRESERVE_EMPTY_ROWS = $this->command->shouldPreserveEmptyRows();
 		
-		return $reader;
+		return new OdsReader($options);
 	}
 }

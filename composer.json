@@ -21,7 +21,7 @@
     "ext-json": "*",
     "jdorn/sql-formatter": "^1.2",
     "halaxa/json-machine": "^1.0",
-    "openspout/openspout": "^3.3",
+    "openspout/openspout": "^4.0",
     "guzzlehttp/guzzle": "^7.0"
   },
   "require-dev": {

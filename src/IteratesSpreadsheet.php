@@ -2,6 +2,7 @@
 
 namespace Glhd\ConveyorBelt;
 
+use OpenSpout\Common\Entity\Cell\DateTimeCell;
 use OpenSpout\Common\Helper\EncodingHelper;
 use Glhd\ConveyorBelt\Belts\ConveyorBelt;
 use Glhd\ConveyorBelt\Belts\SpreadsheetBelt;
@@ -49,9 +50,10 @@ trait IteratesSpreadsheet
 		$result = [];
 		
 		foreach ($cells as $index => $cell) {
-			$value = $cell->isDate()
-				? Date::instance($cell->getValue())
-				: $cell->getValue();
+			$value = match ($cell::class) {
+				DateTimeCell::class => Date::instance($cell->getValue()),
+				default => $cell->getValue(),
+			};
 			
 			$key = $headings[$index] ?? Str::{$format}('column '.($index + 1));
 			
