@@ -2,12 +2,12 @@
 
 namespace Glhd\ConveyorBelt\Belts;
 
-use Box\Spout\Common\Entity\Row;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Box\Spout\Reader\CSV\Reader as CsvReader;
-use Box\Spout\Reader\ODS\Reader as OdsReader;
-use Box\Spout\Reader\ReaderInterface;
-use Box\Spout\Reader\XLSX\Reader as XlsxReader;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Reader\Common\Creator\ReaderEntityFactory;
+use OpenSpout\Reader\CSV\Reader as CsvReader;
+use OpenSpout\Reader\ODS\Reader as OdsReader;
+use OpenSpout\Reader\ReaderInterface;
+use OpenSpout\Reader\XLSX\Reader as XlsxReader;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\LazyCollection;
 

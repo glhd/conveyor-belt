@@ -2,7 +2,7 @@
 
 namespace Glhd\ConveyorBelt;
 
-use Box\Spout\Common\Helper\EncodingHelper;
+use OpenSpout\Common\Helper\EncodingHelper;
 use Glhd\ConveyorBelt\Belts\ConveyorBelt;
 use Glhd\ConveyorBelt\Belts\SpreadsheetBelt;
 use Illuminate\Support\Facades\Date;
@@ -40,7 +40,7 @@ trait IteratesSpreadsheet
 	}
 	
 	/**
-	 * @param \Box\Spout\Common\Entity\Cell[] $cells
+	 * @param \OpenSpout\Common\Entity\Cell[] $cells
 	 * @return \stdClass
 	 */
 	public function mapCells(array $cells, array $headings)
@@ -62,7 +62,7 @@ trait IteratesSpreadsheet
 	}
 	
 	/**
-	 * @param \Box\Spout\Common\Entity\Cell[] $cells
+	 * @param \OpenSpout\Common\Entity\Cell[] $cells
 	 * @return array
 	 */
 	public function mapHeadings(array $cells): array
