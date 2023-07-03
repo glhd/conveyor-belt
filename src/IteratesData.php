@@ -12,6 +12,8 @@ use Symfony\Component\Console\Command\Command;
  * @method beforeFirstRow()
  * @method afterLastRow()
  * @method handleRow($row)
+ * @method bool filterRow($row)
+ * @method bool rejectRow($row)
  * @property bool $collect_exceptions
  * @property string $row_name
  * @property string $row_name_plural

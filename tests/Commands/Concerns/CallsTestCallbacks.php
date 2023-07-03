@@ -4,6 +4,16 @@ namespace Glhd\ConveyorBelt\Tests\Commands\Concerns;
 
 trait CallsTestCallbacks
 {
+	public function filterRow($item)
+	{
+		return $this->callTestCallback($item);
+	}
+	
+	public function rejectRow($item)
+	{
+		return $this->callTestCallback($item);
+	}
+	
 	public function handleRow($item)
 	{
 		$this->callTestCallback($item);
@@ -28,8 +38,6 @@ trait CallsTestCallbacks
 	
 	protected function callNamedTestCallback(string $function, array $args)
 	{
-		app("test_callbacks.{$function}")(...$args);
-		
-		return $this;
+		return app("test_callbacks.{$function}")(...$args);
 	}
 }

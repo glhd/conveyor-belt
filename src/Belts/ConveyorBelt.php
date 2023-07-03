@@ -10,6 +10,7 @@ use Illuminate\Console\Concerns\InteractsWithIO;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Enumerable;
 use Illuminate\Support\Str;
+use LogicException;
 use PHPUnit\Framework\Exception as PhpUnitException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -110,7 +111,28 @@ abstract class ConveyorBelt
 	
 	protected function execute(): void
 	{
-		$this->collect()->each(fn($item) => $this->handleRow($item));
+		$this->collect()
+			->filter(fn($item) => $this->filter($item))
+			->each(fn($item) => $this->handleRow($item));
+	}
+	
+	protected function filter($item): bool
+	{
+		$filtered = null;
+		if (method_exists($this->command, 'filterRow')) {
+			$filtered = $this->command->filterRow($item);
+		}
+		
+		$rejected = null;
+		if (method_exists($this->command, 'rejectRow')) {
+			$rejected = $this->command->rejectRow($item);
+		}
+		
+		if (true === $filtered && true === $rejected) {
+			throw new LogicException('The results from "filterRow" and "rejectRow" conflict.');
+		}
+		
+		return false !== $filtered && true !== $rejected;
 	}
 	
 	protected function finish(): void
