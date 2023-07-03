@@ -2,6 +2,8 @@
 
 namespace Glhd\ConveyorBelt\Belts;
 
+use Illuminate\Support\Enumerable;
+use Illuminate\Support\LazyCollection;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Reader\CSV\Options as CsvOptions;
 use OpenSpout\Reader\CSV\Reader as CsvReader;
@@ -10,8 +12,6 @@ use OpenSpout\Reader\ODS\Reader as OdsReader;
 use OpenSpout\Reader\ReaderInterface;
 use OpenSpout\Reader\XLSX\Options as XlsxOptions;
 use OpenSpout\Reader\XLSX\Reader as XlsxReader;
-use Illuminate\Support\Enumerable;
-use Illuminate\Support\LazyCollection;
 
 /**
  * @property \Glhd\ConveyorBelt\IteratesSpreadsheet|\Symfony\Component\Console\Command\Command $command
