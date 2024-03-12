@@ -18,7 +18,7 @@
 		"illuminate/collections": "^8|^9|^10|^11|12.x-dev|dev-master",
 		"illuminate/console": "^8|^9|^10|^11|12.x-dev|dev-master",
 		"illuminate/http": "^8|^9|^10|^11|12.x-dev|dev-master",
-		"symfony/console": "^5.4|^6.0",
+		"symfony/console": "^5.4|^6.0|^7.0",
 		"ext-json": "*",
 		"jdorn/sql-formatter": "^1.2",
 		"halaxa/json-machine": "^1.0",
