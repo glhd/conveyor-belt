@@ -6,7 +6,7 @@ class TestHelpersTest extends TestCase
 {
 	public function test_data_provider_helper_builds_all_possible_combinations(): void
 	{
-		$provided = $this->getDataProvider(
+		$provided = static::getDataProvider(
 			['a' => 'eh', 'b' => 'bee'],
 			['one' => 1, 'two' => 2],
 			['yes' => true, 'no' => false],

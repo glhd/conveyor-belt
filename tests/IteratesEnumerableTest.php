@@ -96,9 +96,9 @@ class IteratesEnumerableTest extends TestCase
 		$this->assertTrue($rejected);
 	}
 	
-	public function dataProvider()
+	public static function dataProvider()
 	{
-		return $this->getDataProvider(
+		return static::getDataProvider(
 			['no exceptions' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
 			['' => false, 'step mode' => true],
 		);

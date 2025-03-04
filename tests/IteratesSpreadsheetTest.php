@@ -41,9 +41,9 @@ class IteratesSpreadsheetTest extends TestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	public function dataProvider()
+	public static function dataProvider()
 	{
-		return $this->getDataProvider(
+		return static::getDataProvider(
 			['CSV' => __DIR__.'/sources/people.csv', 'Excel' => __DIR__.'/sources/people.xlsx'],
 			['' => false, 'step mode' => true],
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],

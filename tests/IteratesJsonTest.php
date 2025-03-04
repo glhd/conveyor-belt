@@ -48,9 +48,9 @@ class IteratesJsonTest extends TestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	public function fileDataProvider()
+	public static function fileDataProvider()
 	{
-		return $this->getDataProvider(
+		return static::getDataProvider(
 			['root json' => __DIR__.'/sources/people.json', 'nested json' => __DIR__.'/sources/people-nested.json'],
 			['' => false, 'step mode' => true],
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
@@ -97,9 +97,9 @@ class IteratesJsonTest extends TestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	public function endpointDataProvider()
+	public static function endpointDataProvider()
 	{
-		return $this->getDataProvider(
+		return static::getDataProvider(
 			['' => false, 'step mode' => true],
 			['no exceptions' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],
 		);

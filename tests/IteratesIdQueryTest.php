@@ -51,9 +51,9 @@ class IteratesIdQueryTest extends DatabaseTestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	public function dataProvider()
+	public static function dataProvider()
 	{
-		return $this->getDataProvider(
+		return static::getDataProvider(
 			['eloquent', 'base'],
 			['' => false, 'step mode' => true],
 			['' => false, 'throw exceptions' => 'throw', 'collect exceptions' => 'collect'],

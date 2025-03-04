@@ -4,7 +4,7 @@ namespace Glhd\ConveyorBelt\Tests\Concerns;
 
 trait ProvidesData
 {
-	protected function getDataProvider(array ...$data): array
+	protected static function getDataProvider(array ...$data): array
 	{
 		if (empty($data)) {
 			return [];
