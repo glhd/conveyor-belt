@@ -12,7 +12,6 @@ use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\ArtificiallyFails;
 use Glhd\ConveyorBelt\Tests\Concerns\ProvidesData;
 use Glhd\ConveyorBelt\Tests\Concerns\RegistersTestCallbacks;
-use Glhd\LaravelDumper\LaravelDumperServiceProvider;
 use Illuminate\Console\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -39,7 +38,6 @@ abstract class TestCase extends Orchestra
 	{
 		return [
 			ConveyorBeltServiceProvider::class,
-			LaravelDumperServiceProvider::class,
 		];
 	}
 	
