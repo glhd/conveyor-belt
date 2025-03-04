@@ -2,6 +2,7 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Closure;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Illuminate\Testing\PendingCommand;
@@ -68,7 +69,8 @@ class PendingConveyorBeltCommand
 	{
 		if ($throw) {
 			$this->parameters['--throw'] = true;
-			$this->test->expectException(RuntimeException::class);
+			// expectException is protected
+			(fn() => $this->expectException(RuntimeException::class))->call($this->test);
 		}
 		
 		return $this;
