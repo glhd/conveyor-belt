@@ -15,7 +15,7 @@ trait SetsUpConveyorBelt
 	
 	abstract protected function makeConveyorBelt(): ConveyorBelt;
 	
-	public function configure()
+	public function configure(): void
 	{
 		parent::configure();
 		
