@@ -2,7 +2,6 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
-use Closure;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Illuminate\Testing\PendingCommand;
