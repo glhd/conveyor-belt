@@ -27,7 +27,7 @@ trait SetsUpConveyorBelt
 		return $this->conveyor_belt->handle();
 	}
 	
-	protected function initialize(InputInterface $input, OutputInterface $output)
+	protected function initialize(InputInterface $input, OutputInterface $output): void
 	{
 		if (! $output instanceof OutputStyle) {
 			throw new InvalidArgumentException('Conveyor Belt requires output to be of type "Symfony\Component\Console\Style\OutputStyle"');
