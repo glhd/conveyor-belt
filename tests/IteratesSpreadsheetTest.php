@@ -6,12 +6,13 @@ use Carbon\Carbon;
 use Glhd\ConveyorBelt\Tests\Commands\TestSpreadsheetCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Illuminate\Support\Facades\Date;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class IteratesSpreadsheetTest extends TestCase
 {
 	use CallsTestCommands;
 	
-	/** @dataProvider dataProvider */
+	#[DataProvider('dataProvider')]
 	public function test_it_reads_spreadsheets(string $filename, bool $step, $exceptions): void
 	{
 		$expectations = [

@@ -4,12 +4,13 @@ namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Tests\Commands\TestEnumerableCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class IteratesEnumerableTest extends TestCase
 {
 	use CallsTestCommands;
 	
-	/** @dataProvider dataProvider */
+	#[DataProvider('dataProvider')]
 	public function test_it_can_handle_generic_enumerables($exceptions, $step): void
 	{
 		$expectations = [
@@ -39,7 +40,7 @@ class IteratesEnumerableTest extends TestCase
 		$this->assertHookMethodsWereCalledInExpectedOrder();
 	}
 	
-	/** @dataProvider dataProvider */
+	#[DataProvider('dataProvider')]
 	public function test_it_can_filter_rows($exceptions, $step): void
 	{
 		$data = [

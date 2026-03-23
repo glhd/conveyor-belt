@@ -8,12 +8,13 @@ use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use GuzzleHttp\Psr7\PumpStream;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class IteratesJsonTest extends TestCase
 {
 	use CallsTestCommands;
 	
-	/** @dataProvider fileDataProvider */
+	#[DataProvider('fileDataProvider')]
 	public function test_it_reads_json_files(string $filename, bool $step, $exceptions): void
 	{
 		$pointer = Str::contains($filename, '-nested')
@@ -57,7 +58,7 @@ class IteratesJsonTest extends TestCase
 		);
 	}
 	
-	/** @dataProvider endpointDataProvider */
+	#[DataProvider('endpointDataProvider')]
 	public function test_it_streams_json_api_data($step, $exceptions): void
 	{
 		$stub = file_get_contents(__DIR__.'/sources/botw.json');

@@ -6,6 +6,7 @@ use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use SqlFormatter;
 
 class IteratesQueryTest extends DatabaseTestCase
@@ -13,7 +14,7 @@ class IteratesQueryTest extends DatabaseTestCase
 	use TestsDatabaseTransactions;
 	use CallsTestCommands;
 	
-	/** @dataProvider dataProvider */
+	#[DataProvider('dataProvider')]
 	public function test_it_iterates_database_queries(string $case, bool $step, $exceptions, bool $transaction): void
 	{
 		$expectations = [

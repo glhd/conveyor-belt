@@ -5,12 +5,13 @@ namespace Glhd\ConveyorBelt\Tests;
 use Glhd\ConveyorBelt\Tests\Models\Company;
 use Glhd\ConveyorBelt\Tests\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Before;
 
 class DatabaseTestCase extends TestCase
 {
 	use RefreshDatabase;
 	
-	/** @before */
+	#[Before]
 	public function seedModels(): void
 	{
 		// We're intentionally inserting data out of order so that we can easily confirm our 'by ID' sorting logic

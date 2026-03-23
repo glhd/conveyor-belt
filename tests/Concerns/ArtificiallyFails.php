@@ -2,13 +2,14 @@
 
 namespace Glhd\ConveyorBelt\Tests\Concerns;
 
+use PHPUnit\Framework\Attributes\Before;
 use RuntimeException;
 
 trait ArtificiallyFails
 {
 	protected int $iteration_count_for_exception_trigger = 0;
 	
-	/** @before */
+	#[Before]
 	public function resetArtificiallyFailsCounter()
 	{
 		$this->iteration_count_for_exception_trigger = 0;

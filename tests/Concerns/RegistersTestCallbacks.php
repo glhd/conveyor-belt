@@ -3,12 +3,13 @@
 namespace Glhd\ConveyorBelt\Tests\Concerns;
 
 use Closure;
+use PHPUnit\Framework\Attributes\Before;
 
 trait RegistersTestCallbacks
 {
 	protected array $test_callback_order = [];
 	
-	/** @before */
+	#[Before]
 	public function registerDefaultTestCallbacks()
 	{
 		$this->afterApplicationCreated(function() {

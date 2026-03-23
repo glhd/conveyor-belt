@@ -46,7 +46,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/version" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/exporter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-timer" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/serializable-closure" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/type" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mockery/mockery" />
@@ -54,9 +53,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/monolog/monolog" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/cli-parser" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/deep-copy" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dflydev/dot-access-data" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/diff" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/egulias/email-validator" />
@@ -138,6 +135,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/staabm/side-effects-detector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/clock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php84" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-php85" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

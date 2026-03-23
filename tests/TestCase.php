@@ -14,6 +14,7 @@ use Glhd\ConveyorBelt\Tests\Concerns\ProvidesData;
 use Glhd\ConveyorBelt\Tests\Concerns\RegistersTestCallbacks;
 use Illuminate\Console\Application;
 use Orchestra\Testbench\TestCase as Orchestra;
+use PHPUnit\Framework\Attributes\Before;
 
 abstract class TestCase extends Orchestra
 {
@@ -21,7 +22,7 @@ abstract class TestCase extends Orchestra
 	use ProvidesData;
 	use ArtificiallyFails;
 	
-	/** @before */
+	#[Before]
 	public function registerTestCommands(): void
 	{
 		Application::starting(function(Application $app) {

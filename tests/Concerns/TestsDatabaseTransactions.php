@@ -6,6 +6,7 @@ use Illuminate\Database\Events\TransactionBeginning;
 use Illuminate\Database\Events\TransactionCommitted;
 use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\Before;
 
 trait TestsDatabaseTransactions
 {
@@ -15,7 +16,7 @@ trait TestsDatabaseTransactions
 		TransactionRolledBack::class => false,
 	];
 	
-	/** @before */
+	#[Before]
 	public function setUpTestsDatabaseTransactions()
 	{
 		$this->afterApplicationCreated(function() {

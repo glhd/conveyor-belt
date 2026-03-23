@@ -88,7 +88,6 @@
       <path value="$PROJECT_DIR$/vendor/openspout/openspout" />
       <path value="$PROJECT_DIR$/vendor/fruitcake/php-cors" />
       <path value="$PROJECT_DIR$/vendor/sebastian/diff" />
-      <path value="$PROJECT_DIR$/vendor/sebastian/code-unit-reverse-lookup" />
       <path value="$PROJECT_DIR$/vendor/sebastian/complexity" />
       <path value="$PROJECT_DIR$/vendor/sebastian/object-reflector" />
       <path value="$PROJECT_DIR$/vendor/sebastian/object-enumerator" />
@@ -97,7 +96,6 @@
       <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
       <path value="$PROJECT_DIR$/vendor/sebastian/exporter" />
       <path value="$PROJECT_DIR$/vendor/sebastian/environment" />
-      <path value="$PROJECT_DIR$/vendor/sebastian/code-unit" />
       <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
       <path value="$PROJECT_DIR$/vendor/sebastian/version" />
       <path value="$PROJECT_DIR$/vendor/sebastian/type" />
@@ -109,7 +107,6 @@
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
       <path value="$PROJECT_DIR$/vendor/guzzlehttp/uri-template" />
-      <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
       <path value="$PROJECT_DIR$/vendor/graham-campbell/result-type" />
       <path value="$PROJECT_DIR$/vendor/dragonmantank/cron-expression" />
       <path value="$PROJECT_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
@@ -152,6 +149,7 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php84" />
       <path value="$PROJECT_DIR$/vendor/symfony/clock" />
       <path value="$PROJECT_DIR$/vendor/nunomaduro/collision" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php85" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.0">
@@ -162,7 +160,7 @@
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" use_configuration_file="true" />
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="" use_configuration_file="true" />
     </phpunit_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
