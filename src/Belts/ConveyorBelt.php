@@ -91,14 +91,27 @@ abstract class ConveyorBelt
 	
 	protected function start(): void
 	{
-		$count = null;
+		$count = $this->resolveCount();
 		
-		if ($this instanceof Countable && ! $count = $this->count()) {
+		if (0 === $count) {
 			$this->command->info(trans('conveyor-belt::messages.no_matches', ['records' => $this->command->getRowNamePlural()]));
 			return;
 		}
 		
 		$this->progress->start($count, $this->command->getRowName(), $this->command->getRowNamePlural());
+	}
+	
+	protected function resolveCount(): ?int
+	{
+		if ($this->command instanceof Countable) {
+			return $this->command->count();
+		}
+		
+		if ($this instanceof Countable) {
+			return $this->count();
+		}
+		
+		return null;
 	}
 	
 	protected function run(): void

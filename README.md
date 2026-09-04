@@ -83,6 +83,31 @@ source of each trait to find the appropriate function name.
   set this to `"user"`)
 - `$row_name_plural` — the plural of `$row_name` (usually not necessary, as we use `Str::plural` for you)
 
+### Customizing the progress count
+
+By default, Conveyor Belt only knows the total number of rows when the data source can be counted
+cheaply (for example, `IteratesQuery` and `IteratesIdQuery` run a `COUNT(*)` on your query). If you
+want to provide your own count — because the default count is expensive, or because you're using a
+data source like `IteratesEnumerable`, `IteratesJson`, or `IteratesSpreadsheet` that has no built-in
+count — have your command implement `\Countable`:
+
+```php
+class ProcessUsers extends Command implements \Countable
+{
+  use \Glhd\ConveyorBelt\IteratesEnumerable;
+  
+  public function count(): int
+  {
+    return User::count();
+  }
+  
+  // ...
+}
+```
+
+When your command implements `Countable`, its `count()` method always takes precedence over the data
+source's own count. Returning `0` prints the "no matches" message and skips the progress bar.
+
 ### `IteratesQuery`
 
 - `$chunk_size` — the number of database records to load at one time 

@@ -5,6 +5,11 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### Added
+
+-   Commands that implement `Countable` now provide the progress bar total, taking precedence over
+    the belt's own count (e.g. `IteratesQuery`'s `COUNT(*)`)
+
 ## [2.3.0] - 2026-03-23
 
 ## [2.2.0] - 2025-07-16

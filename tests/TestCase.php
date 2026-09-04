@@ -3,6 +3,8 @@
 namespace Glhd\ConveyorBelt\Tests;
 
 use Glhd\ConveyorBelt\Support\ConveyorBeltServiceProvider;
+use Glhd\ConveyorBelt\Tests\Commands\TestCountableEnumerableCommand;
+use Glhd\ConveyorBelt\Tests\Commands\TestCountableQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestEnumerableCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestIdQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestJsonEndpointCommand;
@@ -32,6 +34,8 @@ abstract class TestCase extends Orchestra
 			$app->resolve(TestQueryCommand::class);
 			$app->resolve(TestIdQueryCommand::class);
 			$app->resolve(TestEnumerableCommand::class);
+			$app->resolve(TestCountableQueryCommand::class);
+			$app->resolve(TestCountableEnumerableCommand::class);
 		});
 	}
 	

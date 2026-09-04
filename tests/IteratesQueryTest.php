@@ -2,10 +2,12 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestCountableQueryCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestQueryCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use Glhd\ConveyorBelt\Tests\Concerns\TestsDatabaseTransactions;
 use Glhd\ConveyorBelt\Tests\Models\User;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SqlFormatter;
 
@@ -70,5 +72,45 @@ class IteratesQueryTest extends DatabaseTestCase
 		$this->artisan(TestQueryCommand::class, ['case' => 'eloquent', '--dump-sql' => true])
 			->expectsOutput($formatted)
 			->assertFailed();
+	}
+	
+	public function test_belt_count_is_used_when_command_is_not_countable(): void
+	{
+		$this->artisan(TestQueryCommand::class, ['case' => 'eloquent'])
+			->expectsOutput('Processing 4 records…')
+			->assertSuccessful();
+	}
+	
+	public function test_command_count_overrides_belt_count(): void
+	{
+		$handled = 0;
+		$this->registerHandleRowCallback(function() use (&$handled) {
+			$handled++;
+		});
+		
+		DB::enableQueryLog();
+		
+		$this->artisan(TestCountableQueryCommand::class, ['case' => 'eloquent', '--count' => 10])
+			->expectsOutput('Processing 10 records…')
+			->doesntExpectOutput('Processing 4 records…')
+			->assertSuccessful()
+			->run();
+		
+		// The query still yields the 4 seeded users; only the reported count changed
+		$this->assertEquals(4, $handled);
+		
+		// The belt's own COUNT(*) query should never have been executed
+		$count_queries = collect(DB::getQueryLog())
+			->filter(fn($log) => str_contains(strtolower($log['query']), 'count('));
+		
+		$this->assertTrue($count_queries->isEmpty(), 'Expected the belt count query to be skipped.');
+	}
+	
+	public function test_command_count_of_zero_shows_no_matches_message(): void
+	{
+		$this->artisan(TestCountableQueryCommand::class, ['case' => 'eloquent', '--count' => 0])
+			->expectsOutput('There are no records that match your query.')
+			->doesntExpectOutputToContain('Processing')
+			->assertSuccessful();
 	}
 }
