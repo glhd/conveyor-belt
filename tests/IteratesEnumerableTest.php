@@ -2,6 +2,7 @@
 
 namespace Glhd\ConveyorBelt\Tests;
 
+use Glhd\ConveyorBelt\Tests\Commands\TestCountableEnumerableCommand;
 use Glhd\ConveyorBelt\Tests\Commands\TestEnumerableCommand;
 use Glhd\ConveyorBelt\Tests\Concerns\CallsTestCommands;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -95,6 +96,25 @@ class IteratesEnumerableTest extends TestCase
 		$this->assertEmpty($expectations);
 		$this->assertTrue($filtered);
 		$this->assertTrue($rejected);
+	}
+	
+	public function test_countable_command_provides_progress_count_for_non_countable_belt(): void
+	{
+		$data = json_encode(['A', 'B', 'C'], JSON_THROW_ON_ERROR);
+		
+		$this->artisan(TestCountableEnumerableCommand::class, ['data' => $data, '--count' => 3])
+			->expectsOutput('Processing 3 records…')
+			->assertSuccessful();
+	}
+	
+	public function test_countable_command_with_zero_count_shows_no_matches(): void
+	{
+		$data = json_encode([], JSON_THROW_ON_ERROR);
+		
+		$this->artisan(TestCountableEnumerableCommand::class, ['data' => $data, '--count' => 0])
+			->expectsOutput('There are no records that match your query.')
+			->doesntExpectOutputToContain('Processing')
+			->assertSuccessful();
 	}
 	
 	public static function dataProvider()
