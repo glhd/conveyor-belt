@@ -5,6 +5,8 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-09-04
+
 ### Added
 
 -   Commands that implement `Countable` now provide the progress bar total, taking precedence over
@@ -97,7 +99,9 @@ format. This project adheres to [Semantic Versioning](https://semver.org/spec/v2
 -   `Fixed` for any bug fixes. 
 -   `Security` in case of vulnerabilities.
 
-[Unreleased]: https://github.com/glhd/conveyor-belt/compare/2.3.0...HEAD
+[Unreleased]: https://github.com/glhd/conveyor-belt/compare/2.4.0...HEAD
+
+[2.4.0]: https://github.com/glhd/conveyor-belt/compare/2.3.0...2.4.0
 
 [2.3.0]: https://github.com/glhd/conveyor-belt/compare/2.2.0...2.3.0
 
